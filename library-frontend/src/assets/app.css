@@ -1,0 +1,33 @@
+body {
+  background-color: var(--surface-200) !important;
+  min-height:100vh;
+  position: relative;
+}
+
+body::after {
+  content: '';
+  display: block;
+  height: 50px; /* Set same as footer's height */
+}
+
+.field:first-of-type label {
+  margin-top: 0px;
+}
+
+.footer {
+  float: right;
+  display: flex;
+  gap: 10px;
+}
+
+Button {
+  height: 50px;
+}
+
+.fieldWrapper {
+  width: 70%;
+}
+
+.card {
+  margin-bottom: 2rem;
+}
