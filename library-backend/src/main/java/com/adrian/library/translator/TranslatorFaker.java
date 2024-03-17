@@ -1,16 +1,16 @@
 package com.adrian.library.translator;
 
 import com.github.javafaker.Faker;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class TranslatorFaker {
 
-    @Autowired
-    TranslatorRepository translatorRepository;
+    private final TranslatorRepository translatorRepository;
     private final Faker faker = new Faker();
 
     public void saveTranslators(int n) {

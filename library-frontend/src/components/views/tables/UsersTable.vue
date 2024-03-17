@@ -7,18 +7,18 @@
       :globalFilterFields="['name', 'email', 'role']">
         <template #header>
           <div class="flex flex-wrap gap-2 align-items-center justify-content-between">
-            <h4 class="m-0">Użytkownicy</h4>
+            <h4 class="m-0">Users</h4>
             <span class="p-input-icon-left">
               <i class="pi pi-search" />
-              <InputText v-model="filters['global'].value" placeholder="Słowo klucz" />
+              <InputText v-model="filters['global'].value" placeholder="Keyword" />
             </span>
           </div>
         </template>
-        <template #empty> Nie znaleziono żadnych użytkowników. </template>
-        <template #loading> Trwa ładowanie danych. Proszę zaczekać. </template>
-        <Column field="name" header="Imię i nazwisko" style="width: 25%" sortable>
+        <template #empty> Could not find any data </template>
+        <template #loading> Loading data, please wait. </template>
+        <Column field="name" header="Name" style="width: 25%" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Imię i nazwisko" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Name" />
           </template>
         </Column>
         <Column field="email" header="Email" style="width: 25%" sortable>
@@ -26,15 +26,15 @@
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Email" />
           </template>
         </Column>
-        <Column field="role" header="Rola" style="width: 25%" sortable>
+        <Column field="role" header="Role" style="width: 25%" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Rola" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Role" />
           </template>
 
           <template #body="slotProps">
-            <span v-if="slotProps.data.role == 'USER'">{{ 'Użytkownik' }}</span>
-            <span v-else-if="slotProps.data.role == 'READER'">{{ 'Czytelnik' }}</span>
-            <span v-else-if="slotProps.data.role == 'LIBRARIAN'">{{ 'Bibliotekarz' }}</span>
+            <span v-if="slotProps.data.role == 'USER'">{{ 'User' }}</span>
+            <span v-else-if="slotProps.data.role == 'READER'">{{ 'Reader' }}</span>
+            <span v-else-if="slotProps.data.role == 'LIBRARIAN'">{{ 'Librarian' }}</span>
             <span v-else-if="slotProps.data.role == 'ADMIN'">{{ 'Admin' }}</span>
           </template>
         </Column>
@@ -43,7 +43,7 @@
             <Button
               icon="pi pi-book"
               outlined rounded class="mr-2"
-              @click="goToLoans(slotProps.data)"
+              @click="goToBorrowings(slotProps.data)"
               style="margin-right: 5px"
             />
             <Button 
@@ -89,45 +89,42 @@
   <Dialog
     v-model:visible="grantReaderRoleConfirmationDialog"
     :style="{ width: '450px' }"
-    header="Potwierdzenie"
+    header="Confirmation"
     :modal="true"
   >
     <div class="confirmation-content">
       <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-      <span v-if="user.role == 'USER'">Czy jesteś pewien, że chcesz przyznać użytkownikowi {{ user.name }}
-        uprawnienia czytelnika?
+      <span v-if="user.role == 'USER'">Are you sure you want to grant reader's privileges to {{ user.name }}?
       </span>
-      <span v-if="user.role == 'READER'">Czy jesteś pewien, że chcesz odebrać użytkownikowi {{ user.name }}
-        uprawnienia czytelnika?
+      <span v-if="user.role == 'READER'">Are you sure you want to deny {{ user.name }} reader's privileges?
       </span>
-      <span v-if="user.role == 'LIBRARIAN' && userRole == 'ADMIN'">Czy jesteś pewien, że chcesz odebrać użytkownikowi {{ user.name }}
-        uprawnienia bibliotekarza?
+      <span v-if="user.role == 'LIBRARIAN' && userRole == 'ADMIN'">Are you sure you want to deny {{ user.name }} librarian's privileges?
       </span>
     </div>
     <template #footer>
       <Button
-        label="Nie"
+        label="No"
         icon="pi pi-times"
         outlined
         @click="grantReaderRoleConfirmationDialog = false"
       />
       <Button 
         v-if="user.role == 'USER'" 
-        label="Tak" 
+        label="Yes" 
         icon="pi pi-check"
         outlined 
         @click="grantReaderRole()" 
       />
       <Button 
         v-if="user.role == 'READER'" 
-        label="Tak" 
+        label="Yes" 
         icon="pi pi-check"
         outlined 
         @click="grantUserRole()" 
       />
       <Button 
         v-if="user.role == 'LIBRARIAN' && userRole == 'ADMIN'" 
-        label="Tak" 
+        label="Yes" 
         icon="pi pi-times"
         outlined 
         @click="grantReaderRole()" 
@@ -138,24 +135,23 @@
   <Dialog
     v-model:visible="grantLibrarianRoleConfirmationDialog"
     :style="{ width: '450px' }"
-    header="Potwierdzenie"
+    header="Confirmation"
     :modal="true"
   >
     <div class="confirmation-content">
       <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-      <span>Czy jesteś pewien, że chcesz przyznać użytkownikowi {{ user.name }}
-        uprawnienia bibliotekarza?
+      <span>Are you sure you want to grant librarian's privileges to {{ user.name }}?
       </span>
     </div>
     <template #footer>
       <Button
-        label="Nie"
+        label="No"
         icon="pi pi-times"
         outlined
         @click="grantLibrarianRoleConfirmationDialog = false"
       />
       <Button 
-        label="Tak" 
+        label="Yes" 
         icon="pi pi-check"
         outlined
         @click="grantLibrarianRole()" 
@@ -195,9 +191,9 @@ export default {
         this.users = response.data;
       });
     },
-    goToLoans(user) {
+    goToBorrowings(user) {
       this.$router.push({
-        name: "userLoans",
+        name: "userBorrowings",
         params: { 
           userId: user.id
         },
@@ -231,15 +227,15 @@ export default {
         this.user.role = 'USER';
         this.$toast.add({
           severity: "success",
-          summary: "Sukces",
-          detail: "Rola została odebrana pomyślnie",
+          summary: "Success",
+          detail: "The role has been taken away",
           life: 3000
         });
       } else {
         this.$toast.add({
           severity: "error",
-          summary: "Błąd",
-          detail: "Nie udało się odebrać roli",
+          summary: "Error",
+          detail: "Could not take away the role",
           life: 3000
         });
       }
@@ -253,15 +249,15 @@ export default {
         this.user.role = 'READER';
         this.$toast.add({
           severity: "success",
-          summary: "Sukces",
-          detail: "Rola została przyznana pomyślnie",
+          summary: "Success",
+          detail: "The role has been granted",
           life: 3000
         });
       } else {
         this.$toast.add({
           severity: "error",
-          summary: "Błąd",
-          detail: "Nie udało się przyznać roli",
+          summary: "Error",
+          detail: "Could not grant the role",
           life: 3000
         });
       }
@@ -275,15 +271,15 @@ export default {
         this.user.role = 'LIBRARIAN';
         this.$toast.add({
           severity: "success",
-          summary: "Sukces",
-          detail: "Rola została przyznana pomyślnie",
+          summary: "Success",
+          detail: "The role has been granted",
           life: 3000
         });
       } else {
         this.$toast.add({
           severity: "error",
-          summary: "Błąd",
-          detail: "Nie udało się przyznać roli",
+          summary: "Error",
+          detail: "Could not grant the role",
           life: 3000
         });
       }

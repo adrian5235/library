@@ -1,14 +1,14 @@
 package com.adrian.library.user;
 
 import com.github.javafaker.Faker;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class UserFaker {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
     private final Faker faker = new Faker();
 
     public void saveUsers(int n) {

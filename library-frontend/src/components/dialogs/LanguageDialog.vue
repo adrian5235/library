@@ -5,7 +5,7 @@
         <Field v-model="name" name="name">
           <span class="p-float-label">
             <InputText v-model="name" autofocus aria-describedby="name-help" :class="{ 'p-invalid': errors.name }" />
-            <label>Nazwa</label>
+            <label>Name</label>
           </span>
         </Field>
         <small id="name-help" class="p-error">
@@ -14,8 +14,8 @@
       </div>
 
       <div class="footer">
-        <Button label="Anuluj" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
-        <Button type="submit" label="Zapisz" icon="pi pi-check" outlined />
+        <Button label="Cancel" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
+        <Button type="submit" label="Save" icon="pi pi-check" outlined />
       </div>
     </Form>
   </Dialog>
@@ -36,7 +36,7 @@ export default {
   },
   data() {
     const schema = yup.object({
-      name: yup.string().required('Nazwa jest wymagana')
+      name: yup.string().required('Name is required')
     });
 
     return {
@@ -54,14 +54,14 @@ export default {
       if (this.editMode) /* update */ {
         LanguageService.update(this.language).then((response) => {
           if (response.status == 200) {
-            this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zaktualizowano język', life: 10000});
+            this.$toast.add({severity:'success', summary: 'Success', detail: 'The language has been updated', life: 10000});
             for (var i = 0; i < this.$parent.languages.length; i++) {
               if (this.$parent.languages[i].id == response.data.id) {
                 this.$parent.languages[i] = response.data;
               }
             }
           } else {
-            this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Zaktualizowanie języka nie powiodło się', life: 10000});
+            this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not update the language', life: 10000});
           }
         });
       } else /* create */ {
@@ -70,11 +70,11 @@ export default {
         if (!existingLanguage) {
           LanguageService.create(this.language).then((response) => {
             if (response.status == 200) {
-              this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zapisano nowy język', life: 10000});
+              this.$toast.add({severity:'success', summary: 'Success', detail: 'The new language has been saved', life: 10000});
               this.$parent.languages.push(response.data);
               this.$parent.language = response.data;
             } else {
-              this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Zapisanie nowego języka nie powiodło się', life: 10000});
+              this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not save the new language', life: 10000});
             }
           });
         } else {
@@ -90,11 +90,11 @@ export default {
   },
   mounted() {
     if (this.editMode) {
-      this.header = 'Edycja języka';
+      this.header = 'Edit language';
       this.language = this.$parent.language;
       this.name = this.language.name;
     } else {
-      this.header = 'Nowy język';
+      this.header = 'New language';
     }
   }
 };

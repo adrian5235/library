@@ -1,7 +1,7 @@
-package com.adrian.library.loan;
+package com.adrian.library.borrowing;
 
 import com.adrian.library.copy.Copy;
-import com.adrian.library.loan.status.LoanStatus;
+import com.adrian.library.borrowing.status.BorrowingStatus;
 import com.adrian.library.reservation.Reservation;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class LoanDTO {
+public class BorrowingDTO {
 
     private final int id;
     private final LocalDate createdOn;
@@ -27,6 +27,6 @@ public class LoanDTO {
     private final String notes;
     private final Copy copy;
     private final int userId;
-    private final LoanStatus status;
+    private final BorrowingStatus status;
     private final Reservation reservation;
 }

@@ -6,7 +6,7 @@
           <Field v-model="signature" name="signature">
             <span class="p-float-label">
               <InputText v-model="signature" aria-describedby="signature-help" :class="{ 'p-invalid': errors.signature }" />
-              <label>Sygnatura</label>
+              <label>Signature</label>
             </span>
           </Field>
           <small id="signature-help" class="p-error">
@@ -19,7 +19,7 @@
             <span class="p-float-label">
               <Calendar v-bind="field" v-model="purchaseDate" :manualInput="false" showIcon showButtonBar
               aria-describedby="purchaseDate-help" :class="{ 'p-invalid': errors.purchaseDate }" />
-              <label>Data zakupu</label>
+              <label>Purchase date</label>
             </span>
           </Field>
           <small id="purchaseDate-help" class="p-error">
@@ -31,7 +31,7 @@
           <Field v-model="price" name="price">
             <span class="p-float-label">
               <InputText v-model="price" aria-describedby="price-help" :class="{ 'p-invalid': errors.price }" />
-              <label>Cena zakupu</label>
+              <label>Price</label>
             </span>
           </Field>
           <small id="price-help" class="p-error">
@@ -45,7 +45,7 @@
               <span class="p-float-label">
                 <Dropdown v-model="edition" :options="editions" optionLabel="isbn13" filter 
                 aria-describedby="edition-help" :class="{ 'p-invalid': errors.edition }" />
-                <label>Wydanie</label>
+                <label>Edition</label>
               </span>
             </Field>
             <small id="edition-help" class="p-error">
@@ -64,11 +64,11 @@
             <div class="flex flex-wrap gap-3">
               <div class="flex align-items-center">
                 <RadioButton v-model="available" :value="true" />
-                <label class="ml-2">Dostępny</label>
+                <label class="ml-2">Available</label>
               </div>
               <div class="flex align-items-center">
                 <RadioButton v-model="available" :value="false" />
-                <label class="ml-2">Niedostępny</label>
+                <label class="ml-2">Unavailable</label>
               </div>
             </div>
           </Field>
@@ -79,8 +79,8 @@
       </div>
 
       <div class="footer">
-        <Button label="Anuluj" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
-        <Button type="submit" label="Zapisz" icon="pi pi-check" outlined />
+        <Button label="Cancel" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
+        <Button type="submit" label="Save" icon="pi pi-check" outlined />
       </div>
     </Form>
   </Dialog>
@@ -114,10 +114,10 @@ export default {
   },
   data() {
     const schema = yup.object({
-      signature: yup.string().trim().required('Sygnatura jest wymagana'),
-      purchaseDate: yup.date().required('Data zakupu jest wymagana'),
-      price: yup.number().typeError('Cena zakupu musi być liczbą').required('Cena zakupu jest wymagana'),
-      edition: yup.object().required('Wydanie jest wymagane')
+      signature: yup.string().trim().required('The signature is required'),
+      purchaseDate: yup.date().required('The purchase date is required'),
+      price: yup.number().typeError('The price must be a number').required('The price is required'),
+      edition: yup.object().required('The edition is required')
     });
 
     return {
@@ -148,16 +148,16 @@ export default {
       if (this.editMode) /* update */ {
         CopyService.update(this.copy).then((response) => {
           if (response.status == 200) {
-            this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zaktualizowano egzemplarz', life: 10000});
+            this.$toast.add({severity:'success', summary: 'Success', detail: 'The copy has been updated', life: 10000});
             
           } else {
-            this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się zaktualizować egzemplarza', life: 10000});
+            this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not update the copy', life: 10000});
           }
         })
       } else /* create */ {
         CopyService.create(this.copy).then((response) => {
           if (response.status == 200) {
-            this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zapisano nowy egzemplarz', life: 10000});
+            this.$toast.add({severity:'success', summary: 'Success', detail: 'The new copy has been saved', life: 10000});
             if (this.$parent.copy) {
               this.$parent.copies.push(response.data);
             }
@@ -165,7 +165,7 @@ export default {
               this.uploadEditionImage(response.data.edition.id);
             }
           } else {
-            this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się zapisać nowego egzemplarza', life: 10000});
+            this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not save the new copy', life: 10000});
           }
         })
       }
@@ -186,7 +186,7 @@ export default {
   },
   mounted() {
     if (this.editMode) {
-      this.header = 'Edycja egzemplarza';
+      this.header = 'Edit copy';
       this.copy = this.$parent.copy;
       this.signature = this.copy.signature;
       this.purchaseDate = this.copy.purchaseDate;
@@ -194,7 +194,7 @@ export default {
       this.edition = this.copy.edition;
       this.available = this.copy.available;
     } else {
-      this.header = 'Nowy egzemplarz';
+      this.header = 'New copy';
     }
 
     this.getEditions();

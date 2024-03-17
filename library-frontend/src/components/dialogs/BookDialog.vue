@@ -6,7 +6,7 @@
           <Field v-model="title" name="title">
             <span class="p-float-label">
               <InputText v-model="title" aria-describedby="title-help" :class="{ 'p-invalid': errors.title }" />
-              <label>Tytuł</label>
+              <label>Title</label>
             </span>
           </Field>
           <small id="title-help" class="p-error">
@@ -19,7 +19,7 @@
           <Field v-model="titleOriginal" name="titleOriginal">
             <span class="p-float-label">
               <InputText v-model="titleOriginal" aria-describedby="titleOriginal-help" :class="{ 'p-invalid': errors.titleOriginal }" />
-              <label>Tytuł oryginału</label>
+              <label>Original title</label>
             </span>
           </Field>
           <small id="titleOriginal-help" class="p-error">
@@ -34,15 +34,13 @@
               <span class="p-float-label">
                 <Dropdown v-model="language" :options="languages" optionLabel="name" filter
                 aria-describedby="language-help" :class="{ 'p-invalid': errors.language }" />
-                <label>Język oryginału</label>
+                <label>Original language</label>
               </span>
             </Field>
             <small id="language-help" class="p-error">
               {{ errors.language }}
             </small>
           </div>
-          <!-- <Button icon="pi pi-plus" severity="success" @click="languageDialog=true" outlined /> -->
-          <!-- TODO (set dialog width to 500px and .fieldWrapper width to 70%) -->
           <div class="flex gap-2">
             <Button v-if="language" icon="pi pi-pencil" severity="info" 
             @click="editChildDialog=true; languageDialog=true" outlined />
@@ -56,7 +54,7 @@
               <span class="p-float-label">
                 <MultiSelect v-model="bookAuthors" :options="authors" optionLabel="name" filter 
                 aria-describedby="authors-help" :class="{ 'p-invalid': errors.authors }" />
-                <label>Autorzy</label>
+                <label>Authors</label>
               </span>
             </Field>
             <small id="authors-help" class="p-error">
@@ -72,7 +70,7 @@
               <span class="p-float-label">
                 <MultiSelect v-model="bookGenres" :options="genres" optionLabel="name" filter 
                 aria-describedby="genres-help" :class="{ 'p-invalid': errors.genres }" />
-                <label>Gatunki</label>
+                <label>Genres</label>
               </span>
             </Field>
             <small id="genres-help" class="p-error">
@@ -87,7 +85,7 @@
             <span class="p-float-label">
               <Textarea v-model="description" rows="5" cols="30"
               aria-describedby="description-help" :class="{ 'p-invalid': errors.description }" />
-              <label>Opis</label>
+              <label>Description</label>
             </span>
           </Field>
           <small id="description-help" class="p-error">
@@ -97,8 +95,8 @@
       </div>
 
       <div class="footer">
-        <Button label="Anuluj" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
-        <Button type="submit" label="Zapisz" icon="pi pi-check" outlined />
+        <Button label="Cancel" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
+        <Button type="submit" label="Save" icon="pi pi-check" outlined />
       </div>
     </Form>
   </Dialog>
@@ -146,11 +144,11 @@ export default {
   },
   data() {
     const schema = yup.object({
-      title: yup.string().required('Tytuł jest wymagany'),
+      title: yup.string().required('The title is required'),
       titleOriginal: yup.string().nullable(),
-      language: yup.object().required('Język jest wymagany'),
-      authors: yup.array().min(1, 'Autor jest wymagany'),
-      genres: yup.array().min(1, 'Gatunek jest wymagany'),
+      language: yup.object().required('The language is required'),
+      authors: yup.array().min(1, 'At least one author is required'),
+      genres: yup.array().min(1, 'At least one genre is required'),
       description: yup.string().nullable()
     });
 
@@ -187,7 +185,7 @@ export default {
 
       if (this.editMode) /* update */ {
         BookService.update(this.book).then((response) => {
-          this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zaktualizwano książkę', life: 10000});
+          this.$toast.add({severity:'success', summary: 'Success', detail: 'The book has been updated', life: 10000});
           if (response.status == 200) {
             BookService.get(response.data.id).then((result) => {
               for (var i = 0; i < this.$parent.books.length; i++) {
@@ -203,13 +201,13 @@ export default {
               }
             })
           } else {
-            this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się zaktualizować książki', life: 10000});
+            this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not update the book', life: 10000});
           }
         })
       } else /* create */ {
         BookService.create(this.book).then((response) => {
           if (response.status == 200) {
-            this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zapisano nową książkę', life: 10000});
+            this.$toast.add({severity:'success', summary: 'Success', detail: 'The new book has been saved', life: 10000});
             BookService.get(response.data.id).then((result) => {
               this.$parent.books.push(result.data);
               this.$parent.book = result.data;
@@ -221,7 +219,7 @@ export default {
               }
             })
           } else {
-            this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się zapisać nowej książki', life: 10000});
+            this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not save the new book', life: 10000});
           }
         });
       }
@@ -269,7 +267,7 @@ export default {
     this.getGenres();
 
     if (this.editMode) {
-      this.header = 'Edycja książki';
+      this.header = 'Edit book';
       this.book = this.$parent.book;
       this.title = this.book.title;
       this.titleOriginal = this.book.titleOriginal;
@@ -278,7 +276,7 @@ export default {
       this.bookGenres = this.book.genres;
       this.description = this.book.description;
     } else {
-      this.header = 'Nowa książka';
+      this.header = 'New book';
     }
   }
 };

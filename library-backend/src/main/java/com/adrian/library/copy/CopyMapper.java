@@ -1,22 +1,21 @@
 package com.adrian.library.copy;
 
+import com.adrian.library.borrowing.Borrowing;
 import com.adrian.library.edition.Edition;
 import com.adrian.library.edition.EditionDTO;
 import com.adrian.library.edition.EditionMapper;
-import com.adrian.library.loan.Loan;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class CopyMapper {
 
-    @Autowired
-    private CopyRepository copyRepository;
-    @Autowired
-    private EditionMapper editionMapper;
+    private final CopyRepository copyRepository;
+    private final EditionMapper editionMapper;
 
     public CopyDTO toDto(Copy copy) {
         int id = copy.getId();
@@ -38,8 +37,8 @@ public class CopyMapper {
         Edition edition = editionMapper.toEntity(copyDTO.getEdition());
 
         Copy existingCopy = copyRepository.getReferenceById(copyDTO.getId());
-        List<Loan> loans = existingCopy.getLoans();
+        List<Borrowing> borrowings = existingCopy.getBorrowings();
 
-        return new Copy(id, signature, purchaseDate, price, available, edition, loans);
+        return new Copy(id, signature, purchaseDate, price, available, edition, borrowings);
     }
 }

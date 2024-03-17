@@ -1,6 +1,6 @@
 package com.adrian.library.copy;
 
-import com.adrian.library.loan.BookAlreadyLoanedException;
+import com.adrian.library.borrowing.BookAlreadyBorrowedException;
 import com.adrian.library.reservation.BookAlreadyReservedException;
 import com.adrian.library.user.UserLacksActionPointsException;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class CopyController {
     @PostMapping
     @PreAuthorize("hasAuthority('copy:create')")
     Copy create(@RequestBody Copy copy) throws UserLacksActionPointsException, BookAlreadyReservedException,
-            BookAlreadyLoanedException {
+            BookAlreadyBorrowedException {
         return service.create(copy);
     }
 

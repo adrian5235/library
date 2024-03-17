@@ -3,7 +3,7 @@
   <div>
     <div class="flex justify-content-center">
       <div>
-        <h3 style="margin-bottom: 15px">Kontakt</h3>
+        <h3 style="margin-bottom: 15px">Contact</h3>
         <div style="width: 90vw; background-color: white; border-radius: 10px;">
           <span v-if="userRole == 'ADMIN'">
             <Editor v-model="miscellaneous.contact" editorStyle="height: 600px" />
@@ -15,7 +15,7 @@
       </div>  
     </div>
     <div class="flex justify-content-end mt-4 mb-4" style="width: 95vw">
-      <Button v-if="userRole == 'ADMIN'" @click="save()" label="Zapisz" outlined></Button>
+      <Button v-if="userRole == 'ADMIN'" @click="save()" label="Save" outlined></Button>
     </div>
   </div>
 </template>
@@ -41,9 +41,9 @@ export default {
     save() {
       MiscellaneousService.update(this.miscellaneous).then((response) => {
         if (response.status == 200) {
-          this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zaktualizowano zawartość', life: 10000});
+          this.$toast.add({severity:'success', summary: 'Success', detail: 'The content has been updated', life: 10000});
         } else {
-          this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Nie udało się zaktualizować zawartości', life: 10000});
+          this.$toast.add({severity:'success', summary: 'Success', detail: 'Could not update the content', life: 10000});
         }
       })
     },

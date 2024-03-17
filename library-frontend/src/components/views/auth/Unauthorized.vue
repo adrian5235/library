@@ -1,6 +1,6 @@
 <template>
   <Header />
-  <h2 class="flex justify-content-center">Akcja nieautoryzowana</h2>
+  <h2 class="flex justify-content-center">Unauthorized action</h2>
 </template>
 
 <script>

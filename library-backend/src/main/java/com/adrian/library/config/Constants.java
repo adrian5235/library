@@ -1,27 +1,36 @@
 package com.adrian.library.config;
 
+import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import org.ini4j.Ini;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
-
 import static java.util.stream.Collectors.toMap;
 
 @Configuration
 public class Constants {
 
-    public static final double firstChargeAmount;
-    public static final double subsequentChargeAmount;
-    public static final String email;
-    public static final int actionPoints;
+    @Getter
+    private static double firstChargeAmount;
+    @Getter
+    private static double subsequentChargeAmount;
+    @Getter
+    private static String email;
+    @Getter
+    private static int actionPoints;
+    @Value("${path.constants}")
+    private String constantsFilePath;
 
-    static {
+    @PostConstruct
+    public void init() {
         Map<String, Map<String, String>> map;
         try {
-             map = parseIniFile(new File("src/main/resources/constants.ini"));
+             map = parseIniFile(new File(constantsFilePath));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

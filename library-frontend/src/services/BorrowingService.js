@@ -1,14 +1,14 @@
 import axios from 'axios'
 
-const LOANS_URL = 'http://localhost:8080/loans';
+const BORROWINGS_URL = 'http://localhost:8080/borrowings';
 let response;
 
-class LoanService {
+class BorrowingService {
 
   getByUserId(userId) {
     const response = axios({
       method: 'get',
-      url: LOANS_URL + "/user/" + userId,
+      url: BORROWINGS_URL + "/user/" + userId,
       headers: { 
         'Authorization': `Bearer ${localStorage.getItem('user-token')}`
       }
@@ -20,13 +20,13 @@ class LoanService {
     return response;
   }
 
-  create(userId, editionId) {
+  create(editionId, userId) {
     const response = axios({
       method: 'post',
-      url: LOANS_URL,
+      url: BORROWINGS_URL,
       params: {
-        userId: userId,
-        editionId: editionId
+        editionId: editionId,
+        userId: userId
       },
       headers: { 
         'Authorization': `Bearer ${localStorage.getItem('user-token')}`
@@ -39,11 +39,11 @@ class LoanService {
     return response;
   }
 
-  update(loan) {
+  update(borrowing) {
     const response = axios({
       method: 'put',
-      url: LOANS_URL,
-      data: loan,
+      url: BORROWINGS_URL,
+      data: borrowing,
       headers: { 
         'Authorization': `Bearer ${localStorage.getItem('user-token')}`
       },
@@ -55,10 +55,10 @@ class LoanService {
     return response;
   }
   
-  // set loan status to finalized and its returnedOn date
-  async finalize(loanId) {
+  // set borrowing status to finalized and its returnedOn date
+  async finalize(borrowingId) {
     try {
-      response = await axios.put(LOANS_URL + '/' + loanId + '/finalize', {}, {
+      response = await axios.put(BORROWINGS_URL + '/' + borrowingId + '/finalize', {}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user-token')}`
         },
@@ -69,11 +69,11 @@ class LoanService {
     return response;
   }
 
-  // set loan status to active and its loanedOn date
-  async activate(loanId) {
-    console.log(loanId);
+  // set borrowing status to active and its borrowedOn date
+  async activate(borrowingId) {
+    console.log(borrowingId);
     try {
-      response = await axios.put(LOANS_URL + "/" + loanId + '/activate', {}, {
+      response = await axios.put(BORROWINGS_URL + "/" + borrowingId + '/activate', {}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user-token')}`
         },
@@ -84,10 +84,10 @@ class LoanService {
     return response;
   }
 
-  // set loan status to canceled 
-  async cancel(loanId) {
+  // set borrowing status to canceled 
+  async cancel(borrowingId) {
     try {
-      response = await axios.put(LOANS_URL + "/" + loanId + '/cancel', {}, {
+      response = await axios.put(BORROWINGS_URL + "/" + borrowingId + '/cancel', {}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user-token')}`
         },
@@ -98,9 +98,9 @@ class LoanService {
     return response;
   }
 
-  async setChargeAsPaid(loanId) {
+  async setChargeAsPaid(borrowingId) {
     try {
-      response = await axios.put(LOANS_URL + "/" + loanId + '/chargePaid', {}, {
+      response = await axios.put(BORROWINGS_URL + "/" + borrowingId + '/chargePaid', {}, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('user-token')}`
         },
@@ -112,4 +112,4 @@ class LoanService {
   }
 }
 
-export default new LoanService();
+export default new BorrowingService();

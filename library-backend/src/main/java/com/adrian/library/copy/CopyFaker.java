@@ -4,22 +4,24 @@ import com.adrian.library.edition.Edition;
 import com.adrian.library.edition.EditionRepository;
 import com.github.javafaker.Faker;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Component
+@RequiredArgsConstructor
 public class CopyFaker {
 
-    @Autowired
-    CopyRepository copyRepository;
-    @Autowired
-    EditionRepository editionRepository;
+    private final CopyRepository copyRepository;
+    private final EditionRepository editionRepository;
     private final Faker faker = new Faker();
-    Random r = new Random();
+    private final Random r = new Random();
 
     @Transactional
     public void saveCopies(int n) {

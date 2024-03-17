@@ -1,6 +1,6 @@
 <template>
   <Header />
-  <h2 class="flex justify-content-center">Akcja nieuwierzytelniona</h2>
+  <h2 class="flex justify-content-center">Unauthenticated acton</h2>
 </template>
 
 <script>

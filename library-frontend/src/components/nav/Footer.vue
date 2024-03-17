@@ -1,6 +1,6 @@
 <template>
   <footer class="flex justify-content-center align-items-center">
-    <span>Kontakt:</span>
+    <span>Contact:</span>
     <span>+48 559 221 334</span>
     <span>library@localhost</span>
   </footer>

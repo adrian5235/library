@@ -14,5 +14,5 @@ public class MostPopularBooks {
     private int position;
     @Id
     private String title;
-    private long numberOfLoanedCopies;
+    private long numberOfBorrowedCopies;
 }

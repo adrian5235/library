@@ -1,7 +1,7 @@
 package com.adrian.library.reservation;
 
 import com.adrian.library.edition.Edition;
-import com.adrian.library.loan.Loan;
+import com.adrian.library.borrowing.Borrowing;
 import com.adrian.library.reservation.status.ReservationStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -48,5 +48,5 @@ public class Reservation {
 
     @JsonIgnore
     @OneToOne(mappedBy = "reservation")
-    private Loan loan;
+    private Borrowing borrowing;
 }

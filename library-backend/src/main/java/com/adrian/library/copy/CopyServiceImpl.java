@@ -2,7 +2,7 @@ package com.adrian.library.copy;
 
 import com.adrian.library.edition.Edition;
 import com.adrian.library.edition.EditionRepository;
-import com.adrian.library.loan.BookAlreadyLoanedException;
+import com.adrian.library.borrowing.BookAlreadyBorrowedException;
 import com.adrian.library.reservation.BookAlreadyReservedException;
 import com.adrian.library.reservation.ReservationServiceImpl;
 import com.adrian.library.user.UserLacksActionPointsException;
@@ -36,7 +36,7 @@ public class CopyServiceImpl implements CopyService {
 
     @Override
     public Copy create(Copy copy) throws UserLacksActionPointsException, BookAlreadyReservedException,
-            BookAlreadyLoanedException {
+            BookAlreadyBorrowedException {
         Edition edition = copy.getEdition();
 
         if (copy.isAvailable()) {
@@ -47,7 +47,7 @@ public class CopyServiceImpl implements CopyService {
         copy.setPurchaseDate(copy.getPurchaseDate().plusDays(1));
 
         Copy savedCopy = copyRepository.save(copy);
-        reservationService.loan();
+        reservationService.borrow();
         return savedCopy;
     }
 

@@ -5,46 +5,46 @@
       :rowsPerPageOptions="[10, 20, 30]" :sortOrder="1" removableSort v-model:filters="filters" dataKey="id" filterDisplay="row">
         <template #header>
           <div class="flex flex-wrap gap-2 align-items-center justify-content-between">
-            <h4 class="m-0">Najpopularniejsi autorzy</h4>
+            <h4 class="m-0">The most popular authors</h4>
             <Button :label="periodOfTimeFormatted" icon="pi pi-calendar" text @click="showDialog()" />
           </div>
         </template>
-        <template #empty> Nie znaleziono żadnych danych. </template>
-        <template #loading> Trwa ładowanie danych. Proszę zaczekać. </template>
+        <template #empty> Could not find any data </template>
+        <template #loading> Loading data, please wait. </template>
 
-        <Column field="position" header="Pozycja" sortable style="width: 15%">
+        <Column field="position" header="Position" sortable style="width: 15%">
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-            class="p-column-filter" placeholder="Pozycja" />
+            class="p-column-filter" placeholder="Position" />
           </template>
         </Column>
 
-        <Column field="name" header="Imię i nazwisko" sortable>
+        <Column field="name" header="Name" sortable>
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value"  type="text"  @input="filterCallback()" 
-            class="p-column-filter" placeholder="Imię i nazwisko" />
+            class="p-column-filter" placeholder="Name" />
           </template>
         </Column>
 
-        <Column field="numberOfLoanedCopies" header="Ilość wypożyczonych egzemplarzy" sortable style="width: 20%">
+        <Column field="numberOfBorrowedCopies" header="Borrowed copies" sortable style="width: 20%">
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-            class="p-column-filter" placeholder="Min. ilość wypożyczonych egzemplarzy" />
+            class="p-column-filter" placeholder="Min. borrowed copies" />
           </template>
         </Column>
       </DataTable>
     </div>
 
-    <Dialog v-model:visible="dialog" :style="{width: '450px'}" header="Wybierz przedział czasu" :modal="true" class="p-fluid">
+    <Dialog v-model:visible="dialog" :style="{width: '450px'}" header="Change time period" :modal="true" class="p-fluid">
       <div class="field">
-        <label for="periodOfTime">Przedział czasu</label>
+        <label for="periodOfTime">Time period</label>
         <div class="card flex justify-content-center">
-          <Calendar v-model="periodOfTime" selectionMode="range" showIcon showButtonBar :manualInput="false" placeholder="Wybierz przedział czasu od do" />
+          <Calendar v-model="periodOfTime" selectionMode="range" showIcon showButtonBar :manualInput="false" placeholder="Choose time period" />
         </div>
       </div>
       <template #footer>
-        <Button label="Anuluj" icon="pi pi-times" @click="cancel()" outlined />
-        <Button label="Zatwierdź" icon="pi pi-check" @click="changePeriodOfTime()" outlined />
+        <Button label="Cancel" icon="pi pi-times" @click="cancel()" outlined />
+        <Button label="Confirm" icon="pi pi-check" @click="changePeriodOfTime()" outlined />
       </template>
     </Dialog>
   </div>
@@ -71,7 +71,7 @@ export default {
       filters: {
         position: { value: null, matchMode: FilterMatchMode.CONTAINS },
         name: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        numberOfLoanedCopies: { value: null, matchMode: FilterMatchMode.GREATER_THAN_OR_EQUAL_TO }
+        numberOfBorrowedCopies: { value: null, matchMode: FilterMatchMode.GREATER_THAN_OR_EQUAL_TO }
       },
     };
   },
@@ -121,7 +121,7 @@ export default {
       if (this.dateTo) {
         return moment(String(this.dateFrom)).format('DD/MM/YYYY') + ' - ' + moment(String(this.dateTo)).format('DD/MM/YYYY');
       }
-      return 'Ostatni rok';
+      return 'Last year';
     }
   },
   mounted() {

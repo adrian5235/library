@@ -5,7 +5,7 @@
         <Field v-model="name" name="name">
           <span class="p-float-label">
             <InputText v-model="name" autofocus aria-describedby="name-help" :class="{ 'p-invalid': errors.name }" />
-            <label>Nazwa</label>
+            <label>Name</label>
           </span>
         </Field>
         <small id="name-help" class="p-error">
@@ -14,8 +14,8 @@
       </div>
 
       <div class="footer">
-        <Button label="Anuluj" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
-        <Button type="submit" label="Zapisz" icon="pi pi-check" outlined />
+        <Button label="Cancel" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
+        <Button type="submit" label="Save" icon="pi pi-check" outlined />
       </div>
     </Form>
   </Dialog>
@@ -36,7 +36,7 @@ export default {
   },
   data() {
     const schema = yup.object({
-      name: yup.string().required('Nazwa jest wymagana')
+      name: yup.string().required('The name is required')
     });
 
     return {
@@ -55,14 +55,14 @@ export default {
       if (this.editMode) /* update */ {
         GenreService.update(this.genre).then((response) => {
           if (response.status == 200) {
-            this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zaktualizowano gatunek', life: 10000});
+            this.$toast.add({severity:'success', summary: 'Success', detail: 'The genre has been updated', life: 10000});
             for (var i = 0; i < this.$parent.genres.length; i++) {
               if (this.$parent.genres[i].id == response.data.id) {
                 this.$parent.genres[i] = response.data;
               }
             }
           } else {
-            this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Zaktualizowanie gatunku nie powiodło się', life: 10000});
+            this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not update the genre', life: 10000});
           }
         })
       } else /* create */ {
@@ -72,13 +72,13 @@ export default {
         if (!existingGenre) {
           GenreService.create(this.genre).then((response) => {
             if (response.status == 200) {
-              this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zapisano nowy gatunek', life: 10000});
+              this.$toast.add({severity:'success', summary: 'Success', detail: 'The new genre has been saved', life: 10000});
               this.$parent.genres.push(response.data);
               if (this.$parent.book) {
                 this.$parent.bookGenres.push(response.data);
               }
             } else {
-              this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Zapisanie nowego gatunku nie powiodło się', life: 10000});
+              this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not save the new genre', life: 10000});
             }
           })
         } else {
@@ -94,11 +94,11 @@ export default {
   },
   mounted() {
     if (this.editMode) {
-      this.header = 'Edycja gatunku';
+      this.header = 'Edit genre';
       this.genre = this.$parent.genre;
       this.name = this.genre.name;
     } else {
-      this.header = 'Nowy gatunek';
+      this.header = 'New genre';
     }
   }
 };

@@ -5,7 +5,7 @@
         <Field v-model="name" name="name">
           <span class="p-float-label">
             <InputText v-model="name" autofocus aria-describedby="name-help" :class="{ 'p-invalid': errors.name }" />
-            <label>Imię i nazwisko</label>
+            <label>Name</label>
           </span>
         </Field>
         <small id="name-help" class="p-error">
@@ -14,8 +14,8 @@
       </div>
 
       <div class="footer">
-        <Button label="Anuluj" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
-        <Button type="submit" label="Zapisz" icon="pi pi-check" outlined />
+        <Button label="Cancel" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
+        <Button type="submit" label="Save" icon="pi pi-check" outlined />
       </div>
     </Form>
   </Dialog>
@@ -36,7 +36,7 @@ export default {
   },
   data() {
     const schema = yup.object({
-      name: yup.string().trim().required('Imię i nazwisko jest wymagane')
+      name: yup.string().trim().required('Name is required')
     });
 
     return {
@@ -55,7 +55,7 @@ export default {
       if (this.editMode) /* update */ {
         TranslatorService.update(this.translator).then((response) => {
           if (response.status == 200) {
-            this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zaktualizowano tłumacza', life: 10000});
+            this.$toast.add({severity:'success', summary: 'Success', detail: 'The translator has been updated', life: 10000});
             for (var i = 0; i < this.$parent.translators.length; i++) {
               if (this.$parent.translators[i].id == response.data.id) {
                 this.$parent.translators[i] = response.data;
@@ -65,17 +65,17 @@ export default {
               this.$parent.edition.translator = response.data;
             }
           } else {
-            this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Zaktualizowanie tłumacza nie powiodło się', life: 10000});
+            this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not update the translator', life: 10000});
           }
         })
       } else /* create */ {
         TranslatorService.create(this.translator).then((response) => {
           if (response.status == 200) {
-            this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zapisano nowego tłumacza', life: 10000});
+            this.$toast.add({severity:'success', summary: 'Success', detail: 'The new translator has been saved', life: 10000});
             this.$parent.translators.push(response.data);
             this.$parent.translator = response.data;
           } else {
-            this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Zapisanie nowego tłumacza nie powiodło się', life: 10000});
+            this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not save the new translator', life: 10000});
           }
         });
       }
@@ -88,11 +88,11 @@ export default {
   },
   mounted() {
     if (this.editMode) {
-      this.header = 'Edycja tłumacza';
+      this.header = 'Edit translator';
       this.translator = this.$parent.translator;
       this.name = this.translator.name;
     } else {
-      this.header = 'Nowy tłumacz';
+      this.header = 'New translator';
     }
   }
 };

@@ -20,12 +20,11 @@ class ReservationService {
     return response;
   }
 
-  create(userId, bookId, editionId, waitDeadline) {
+  create(bookId, editionId, waitDeadline) {
     const response = axios({
       method: 'post',
       url: RESERVATIONS_URL,
       params: {
-        userId: userId,
         bookId: bookId,
         editionId: editionId,
         waitDeadline: waitDeadline

@@ -46,23 +46,23 @@ app.use(PrimeVue, {
   ripple: true,
   locale: {
     // filters
-    startsWith: 'Zaczyna się od',
-    contains: 'Zawiera',
-    notContains: 'Nie zawiera',
-    endsWith: 'Kończy się na',
-    equals: 'Równa się',
-    notEquals: 'Nie równa się',
-    noFilter: 'Brak filtra',
+    startsWith: 'Starts with',
+    contains: 'Contains',
+    notContains: 'Not contains',
+    endsWith: 'Ends with',
+    equals: 'Equals',
+    notEquals: 'Not equals',
+    noFilter: 'No filter',
 
     // calendar
-    dayNamesMin: ['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'Sb', 'Nd'],
-    dayNamesShort: ['Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'Sb', 'Nd'],
-    monthNames: ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'],
-    monthNamesShort: ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'],
+    dayNamesMin: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    dayNamesShort: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    monthNamesShort: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     dateFormat: 'dd/mm/yy',
     firstDayOfWeek: 0,
-    today: 'Dzisiaj',
-    clear: 'Wyczyść',
+    today: 'Today',
+    clear: 'Clear',
 
     // aria
     aria: ''

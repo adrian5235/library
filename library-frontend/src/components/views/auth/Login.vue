@@ -2,7 +2,7 @@
   <Header />
   <Form @submit="login()" :validation-schema="schema" v-slot="{ errors }">
     <div class="w-full flex flex-column align-items-center gap-5">
-      <h3 style="margin-bottom: 15px;">Logowanie</h3>
+      <h3 style="margin-bottom: 15px;">Log in</h3>
       <div>
         <Field name="email" v-slot="{ field }">
           <span class="p-float-label">
@@ -21,7 +21,7 @@
           <span class="p-float-label">
             <InputText v-bind="field" v-model="password" type="password"
             aria-describedby="password-help" :class="{ 'p-invalid': errors.password }" />
-            <label>Hasło</label>
+            <label>Password</label>
           </span>
         </Field>
         <small id="password-help" class="p-error">
@@ -30,14 +30,14 @@
       </div>
 
       <div class="footer">
-        <Button label="Wyczyść" type="reset" class="p-button-secondary" outlined />
-        <Button label="Zaloguj" type="submit" outlined />
+        <Button label="Reset" type="reset" class="p-button-secondary" outlined />
+        <Button label="Submit" type="submit" outlined />
       </div>
 
-      <Button label="Zarejestruj się" @click="$router.push({ name: 'register'})" icon="pi pi-user-plus" severity="success" outlined 
+      <Button label="Register" @click="$router.push({ name: 'register'})" icon="pi pi-user-plus" severity="success" outlined 
       style="margin-top: -15px" />
 
-      <Button label="Nie pamiętasz hasła?" @click="forgotPasswordDialog = true" outlined 
+      <Button label="Forgot password?" @click="forgotPasswordDialog = true" outlined 
       style="margin-top: -15px" />
     </div>
   </Form>
@@ -62,8 +62,8 @@ export default {
   },
   data() {
     const schema = yup.object({
-      email: yup.string().trim().required('Email jest wymagany').email('Niepoprawny adres email'),
-      password: yup.string().trim().required('Hasło jest wymagane')
+      email: yup.string().trim().required('The email is required').email('The email is incorrect'),
+      password: yup.string().trim().required('The password is required')
     });
 
     return {
@@ -85,8 +85,8 @@ export default {
       } else {
         this.$toast.add({
           severity: "error",
-          summary: "Logowanie nie powiodło się",
-          detail: "Użytkownik o podanym adresie e-mail oraz haśle nie istnieje.",
+          summary: "Could not log in",
+          detail: "The user of given email and password does not exist",
           life: 10000
         });
       }

@@ -1,6 +1,7 @@
 package com.adrian.library.user;
 
-import com.adrian.library.loan.Loan;
+import com.adrian.library.borrowing.Borrowing;
+import com.adrian.library.config.Constants;
 import com.adrian.library.reservation.Reservation;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -31,15 +32,15 @@ public class User implements UserDetails {
 
     private String password;
 
-    // only 5 loans/reservations are allowed at once
-    private int actionPoints = 5;
+    // only specified amount of borrowings/reservations is allowed at once
+    private int actionPoints = Constants.getActionPoints();
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")
-    private List<Loan> loans = new ArrayList<>();
+    private List<Borrowing> borrowings = new ArrayList<>();
 
     @JsonIgnore
     @OneToMany(mappedBy = "user")

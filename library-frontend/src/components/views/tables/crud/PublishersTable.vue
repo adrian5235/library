@@ -4,7 +4,7 @@
     <div class="card">
       <Toolbar class="mb-4">
         <template #start>
-          <Button label="Nowy" icon="pi pi-plus" severity="success" @click="publisherDialog=true" outlined />
+          <Button label="Add" icon="pi pi-plus" severity="success" @click="publisherDialog=true" outlined />
         </template>
       </Toolbar>
 
@@ -12,21 +12,21 @@
       removableSort v-model:filters="filters" filterDisplay="row" :globalFilterFields="['name']">
         <template #header>
           <div class="flex flex-wrap gap-2 align-items-center justify-content-between">
-            <h4 class="m-0">Wydawnictwa</h4>
+            <h4 class="m-0">Publishers</h4>
             <div class="flex justify-content-end gap-2">
               <span class="p-input-icon-left">
                 <i class="pi pi-search" />
-                <InputText v-model="filters['global'].value" placeholder="Słowo klucz" />
+                <InputText v-model="filters['global'].value" placeholder="Keyword" />
               </span>
             </div>
           </div>
         </template>
-        <template #empty> Nie znaleziono żadnych wydawnictw. </template>
-        <template #loading> Trwa ładowanie danych. Proszę zaczekać. </template>
+        <template #empty> Could not find any publishers </template>
+        <template #loading> Loading data, please wait. </template>
 
-        <Column field="name" header="Nazwa" sortable>
+        <Column field="name" header="Name" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Nazwa" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Name" />
           </template>
         </Column>
 

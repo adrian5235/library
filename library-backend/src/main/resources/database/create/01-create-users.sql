@@ -5,6 +5,6 @@ create table _users (
     email varchar(255) not null unique,
     name varchar(255) not null,
     password varchar(255) not null,
-    action_points int null default 5,
+    action_points int null default 10,
     role enum('ADMIN', 'LIBRARIAN', 'READER', 'USER') null
 );

@@ -4,7 +4,7 @@
     <div class="card">
       <Toolbar class="mb-4">
         <template #start>
-          <Button label="Nowa" icon="pi pi-plus" severity="success" @click="bookDialog=true" outlined />
+          <Button label="Add" icon="pi pi-plus" severity="success" @click="bookDialog=true" outlined />
         </template>
       </Toolbar>
 
@@ -13,51 +13,51 @@
       :globalFilterFields="['title']">
         <template #header>
           <div class="flex flex-wrap gap-2 align-items-center justify-content-between">
-            <h4 class="m-0">Książki</h4>
+            <h4 class="m-0">Books</h4>
             <div class="flex justify-content-end gap-2">
               <span class="p-input-icon-left">
                 <i class="pi pi-search" />
-                <InputText v-model="filters['global'].value" placeholder="Słowo klucz" />
+                <InputText v-model="filters['global'].value" placeholder="Keyword" />
               </span>
             </div>
           </div>
         </template>
-        <template #empty> Nie znaleziono żadnych książek. </template>
-        <template #loading> Trwa ładowanie danych. Proszę zaczekać. </template>
+        <template #empty> Could not find any books </template>
+        <template #loading> Loading data, please wait. </template>
 
-        <Column field="title" header="Tytuł" sortable>
+        <Column field="title" header="Title" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Tytuł" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Title" />
           </template>
         </Column>
 
-        <Column field="titleOriginal" header="Tytuł oryginału" sortable>
+        <Column field="titleOriginal" header="Original title" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Tytuł oryginału" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Original title" />
           </template>
         </Column>
 
-        <Column field="language" header="Język oryginału" sortable>
+        <Column field="language" header="Original language" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Język oryginału" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Original language" />
           </template>
           <template #body="slotProps">
             {{ slotProps.data.language.name }}
           </template>
         </Column>
 
-        <Column field="authors" header="Autorzy" sortable>
+        <Column field="authors" header="Authors" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Autorzy" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Authors" />
           </template>
           <template #body="slotProps">
             {{ authorsToString(slotProps.data) }}
           </template>
         </Column>
 
-        <Column field="genres" header="Gatunki" sortable>
+        <Column field="genres" header="Genres" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Gatunki" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Genres" />
           </template>
           <template #body="slotProps">
             {{ genresToString(slotProps.data) }}

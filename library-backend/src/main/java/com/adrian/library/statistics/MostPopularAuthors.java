@@ -14,5 +14,5 @@ public class MostPopularAuthors {
     private int position;
     @Id
     private String name;
-    private long numberOfLoanedCopies;
+    private long numberOfBorrowedCopies;
 }

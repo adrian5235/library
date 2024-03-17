@@ -11,7 +11,7 @@ public enum Permission {
     USER_GRANT_USER_ROLE("user:grantUserRole"),
     USER_GRANT_READER_ROLE("user:grantReaderRole"),
     USER_GRANT_LIBRARIAN_ROLE("user:grantLibrarianRole"),
-    USER_LOANS_READ("user:userLoansRead"),
+    USER_BORROWINGS_READ("user:userBorrowingsRead"),
     USER_RESERVATIONS_READ("user:userReservationsRead"),
 
     BOOK_CREATE("book:create"),
@@ -37,10 +37,11 @@ public enum Permission {
     COPY_CREATE("copy:create"),
     COPY_UPDATE("copy:update"),
 
-    LOAN_READ("loan:read"),
-    LOAN_CREATE("loan:create"),
-    LOAN_UPDATE("loan:update"),
-    LOAN_CANCEL("loan:cancel"),
+    BORROWING_READ("borrowing:read"),
+    BORROWING_CREATE("borrowing:create"),
+    BORROWING_CREATE_AS("borrowing:createAs"),
+    BORROWING_UPDATE("borrowing:update"),
+    BORROWING_CANCEL("borrowing:cancel"),
 
     RESERVATION_READ("reservation:read"),
     RESERVATION_CREATE("reservation:create"),

@@ -7,23 +7,23 @@
       :globalFilterFields="['createdOn', 'waitDeadline', 'status.name', 'book.title', 'edition.date']">
         <template #header>
           <div class="flex flex-wrap gap-2 align-items-center justify-content-between">
-            <h4 v-if="isUserReservationsOwner" class="m-0">Moje rezerwacje</h4>
-            <h4 v-else class="m-0">Rezerwacje użytkownika {{ user.name }}</h4>
+            <h4 v-if="isUserReservationsOwner" class="m-0">My reservations</h4>
+            <h4 v-else class="m-0">{{ user.name }}'s reservations'</h4>
             <span class="p-input-icon-left">
               <i class="pi pi-search" />
-              <InputText v-model="filters['global'].value" placeholder="Słowo klucz" />
+              <InputText v-model="filters['global'].value" placeholder="Keyword" />
             </span>
           </div>
         </template>
-        <template #empty> Nie znaleziono żadnych rezerwacji. </template>
-        <template #loading> Trwa ładowanie danych. Proszę zaczekać. </template>
-        <Column field="book.title" header="Tytuł" style="width: 18%" sortable>
+        <template #empty> Could not find any data </template>
+        <template #loading> Loading data, please wait. </template>
+        <Column field="book.title" header="Title" style="width: 18%" sortable>
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" 
-            placeholder="Tytuł" />
+            placeholder="Title" />
           </template>
         </Column>
-        <Column field="edition.isbn13" header="Wydanie" style="width: 18%" sortable>
+        <Column field="edition.isbn13" header="Edition" style="width: 18%" sortable>
           <template #body="slotProps">
             <template v-if="slotProps.data.edition == null">
               {{ '_' }}
@@ -34,16 +34,16 @@
           </template>
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" 
-            placeholder="Numer ISBN" />
+            placeholder="ISBN-13" />
           </template>
         </Column>
-        <Column field="createdOn" header="Data utworzenia" style="width: 18%" sortable>
+        <Column field="createdOn" header="Created on" style="width: 18%" sortable>
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" 
-            placeholder="Data utworzenia" />
+            placeholder="Date" />
           </template>
         </Column>
-        <Column field="waitDeadline" header="Termin oczekiwania" style="width: 18%" sortable>
+        <Column field="waitDeadline" header="Wait deadline" style="width: 18%" sortable>
           <template #body="slotProps">
             <template v-if="slotProps.data.waitDeadline == null">
               {{ '_' }}
@@ -54,7 +54,7 @@
           </template>
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" 
-            placeholder="Termin oczekiwania" />
+            placeholder="Date" />
           </template>
         </Column>
         <Column field="status.name" header="Status" style="width: 18%" sortable>
@@ -72,7 +72,7 @@
               @click="showNotesDialog(slotProps.data)" 
               style="margin-right: 5px" 
             />
-            <span v-if="slotProps.data.status.name == 'aktywna'">
+            <span v-if="slotProps.data.status.name == 'active'">
               <Button 
                 icon="pi pi-times" 
                 outlined rounded class="mr-2" 
@@ -83,24 +83,24 @@
         </Column>
       </DataTable>
 
-      <Dialog v-model:visible="confirmationDialog" :style="{width: '450px'}" header="Potwierdzenie" 
+      <Dialog v-model:visible="confirmationDialog" :style="{width: '450px'}" header="Confirmation" 
       :modal="true" class="p-fluid">
-        <p>Czy na pewno chcesz anulować tę rezerwację?</p>
+        <p>Are you sure you want to cancel this reservation?</p>
         <template #footer>
-          <Button label="Nie" icon="pi pi-times" outlined @click="hideDialog()"/>
-          <Button label="Tak" icon="pi pi-check" outlined @click="cancelReservation()" />
+          <Button label="No" icon="pi pi-times" outlined @click="hideDialog()"/>
+          <Button label="Yes" icon="pi pi-check" outlined @click="cancelReservation()" />
         </template>
       </Dialog>
 
-      <Dialog v-model:visible="notesDialog" :style="{width: '450px'}" header="Uwagi" 
+      <Dialog v-model:visible="notesDialog" :style="{width: '450px'}" header="Notes" 
       :modal="true" class="p-fluid">
         <div class="field">
           <Textarea v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'" v-model="reservation.notes" rows="5" cols="30" />
           <Textarea v-else disabled v-model="reservation.notes" rows="5" cols="30" />
         </div>
         <template #footer>
-          <Button v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'" label="Anuluj" icon="pi pi-times" outlined @click="hideDialog()"/>
-          <Button v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'" label="Zapisz" icon="pi pi-check" outlined @click="updateReservation()" />
+          <Button v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'" label="Cancel" icon="pi pi-times" outlined @click="hideDialog()"/>
+          <Button v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'" label="Save" icon="pi pi-check" outlined @click="updateReservation()" />
         </template>
       </Dialog>
     </div>
@@ -114,7 +114,7 @@ import { FilterMatchMode } from 'primevue/api';
 import ReservationService from '@/services/ReservationService';
 
 export default {
-  name: "UserLoansView",
+  name: "UserReservationsView",
   components: {
     Header
   },
@@ -169,9 +169,9 @@ export default {
 
       if (response.status == 200) {
         this.$router.go()
-        this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Rezerwacja została zaktualizowana', life: 3000});
+        this.$toast.add({severity:'success', summary: 'Success', detail: 'The reservation has been updated', life: 3000});
       } else {
-        this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się zaktualizować rezerwacji', life: 3000});
+        this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not update the reservation', life: 3000});
       }
     },
     async cancelReservation() {
@@ -179,9 +179,9 @@ export default {
 
       if (response.status == 200) {
         this.$router.go()
-        this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Rezerwacja została anulowana', life: 3000});
+        this.$toast.add({severity:'success', summary: 'Success', detail: 'The reservation has been canceled', life: 3000});
       } else {
-        this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się anulować rezerwacji', life: 3000});
+        this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not cancel the reservation', life: 3000});
       }
     }
   },

@@ -4,7 +4,7 @@
     <div class="card">
       <Toolbar class="mb-4">
         <template #start>
-          <Button label="Nowe" icon="pi pi-plus" severity="success" @click="editionDialog=true" outlined />
+          <Button label="Add" icon="pi pi-plus" severity="success" @click="editionDialog=true" outlined />
         </template>
       </Toolbar>
 
@@ -13,62 +13,62 @@
       :globalFilterFields="['isbn13', 'book.title']">
         <template #header>
           <div class="flex flex-wrap gap-2 align-items-center justify-content-between">
-            <h4 class="m-0">Wydania</h4>
+            <h4 class="m-0">Editions</h4>
             <div class="flex justify-content-end gap-2">
-              <Button v-if="showDetails" @click="showDetails = false" label="Szczegóły" rounded class="mr-2" />
-              <Button v-else outlined @click="showDetails = true" label="Szczegóły" rounded class="mr-2" />
+              <Button v-if="showDetails" @click="showDetails = false" label="Details" rounded class="mr-2" />
+              <Button v-else outlined @click="showDetails = true" label="Details" rounded class="mr-2" />
               <span class="p-input-icon-left">
                 <i class="pi pi-search" />
-                <InputText v-model="filters['global'].value" placeholder="Słowo klucz" />
+                <InputText v-model="filters['global'].value" placeholder="Keyword" />
               </span>
             </div>
           </div>
         </template>
-        <template #empty> Nie znaleziono żadnych wydań. </template>
-        <template #loading> Trwa ładowanie danych. Proszę zaczekać. </template>
+        <template #empty> Could not find any editions </template>
+        <template #loading> Loading data, please wait. </template>
 
-        <Column field="book" header="Tytuł" sortable>
+        <Column field="book" header="Title" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Tytuł" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Title" />
           </template>
           <template #body="slotProps">
             {{ slotProps.data.book.title }}
           </template>
         </Column>
 
-        <Column field="isbn13" header="Numer ISBN" sortable>
+        <Column field="isbn13" header="ISBN-13" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Numer ISBN" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="ISBN-13" />
           </template>
         </Column>
 
-        <Column field="releaseYear" header="Rok wydania" sortable>
+        <Column field="releaseYear" header="Release year" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Rok wydania" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Release year" />
           </template>
         </Column>
 
-        <Column field="binding" header="Oprawa" sortable>
+        <Column field="binding" header="Binding" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Oprawa" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Binding" />
           </template>
           <template #body="slotProps">
             {{ slotProps.data.binding.name }}
           </template>
         </Column>
 
-        <Column field="language" header="Język" sortable>
+        <Column field="language" header="Language" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Język" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Language" />
           </template>
           <template #body="slotProps">
             {{ slotProps.data.language.name }}
           </template>
         </Column>
 
-        <Column field="translator" header="Tłumacz" sortable>
+        <Column field="translator" header="Translator" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Tłumacz" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Translator" />
           </template>
           <template #body="slotProps">
             <span v-if="slotProps.data.translator">
@@ -77,27 +77,27 @@
           </template>
         </Column>
 
-        <Column field="numberOfPages" header="Ilość stron" sortable>
+        <Column field="numberOfPages" header="Pages" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Ilość stron" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Pages" />
           </template>
         </Column>
 
-        <Column v-if="showDetails" field="weight" header="Waga" sortable>
+        <Column v-if="showDetails" field="weight" header="Weight" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Waga" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Weight" />
           </template>
         </Column>
 
-        <Column v-if="showDetails" field="dimensions" header="Wymiary" sortable>
+        <Column v-if="showDetails" field="dimensions" header="Dimensions" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Wymiary" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Dimensions" />
           </template>
         </Column>
 
-        <Column field="quantity" header="Ilość dostępnych egzemplarzy" sortable>
+        <Column field="quantity" header="Copies available" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Ilość dostępnych egzemplarzy" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Copies available" />
           </template>
         </Column>
 

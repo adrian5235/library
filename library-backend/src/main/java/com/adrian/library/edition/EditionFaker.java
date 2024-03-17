@@ -1,9 +1,9 @@
 package com.adrian.library.edition;
 
-import com.adrian.library.book.Book;
-import com.adrian.library.book.BookRepository;
 import com.adrian.library.binding.Binding;
 import com.adrian.library.binding.BindingRepository;
+import com.adrian.library.book.Book;
+import com.adrian.library.book.BookRepository;
 import com.adrian.library.language.Language;
 import com.adrian.library.language.LanguageRepository;
 import com.adrian.library.publisher.Publisher;
@@ -12,29 +12,25 @@ import com.adrian.library.translator.Translator;
 import com.adrian.library.translator.TranslatorRepository;
 import com.github.javafaker.Faker;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
+import java.util.Random;
 
 @Component
+@RequiredArgsConstructor
 public class EditionFaker {
 
-    @Autowired
-    EditionRepository editionRepository;
-    @Autowired
-    BookRepository bookRepository;
-    @Autowired
-    PublisherRepository publisherRepository;
-    @Autowired
-    LanguageRepository languageRepository;
-    @Autowired
-    TranslatorRepository translatorRepository;
-    @Autowired
-    BindingRepository bindingRepository;
+    private final EditionRepository editionRepository;
+    private final BookRepository bookRepository;
+    private final PublisherRepository publisherRepository;
+    private final LanguageRepository languageRepository;
+    private final TranslatorRepository translatorRepository;
+    private final BindingRepository bindingRepository;
     private final Faker faker = new Faker();
-    Random r = new Random();
+    private final Random r = new Random();
 
     @Transactional
     public void saveEditions(int n) {

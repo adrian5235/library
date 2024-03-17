@@ -2,54 +2,54 @@
   <Header />
   <div style="display: flex; justify-content: center">
     <div class="card">
-      <DataTable :value="loans" tableStyle="width: 90vw" paginator :rows="10" :totalRecords="120" :rowsPerPageOptions="[10, 20, 30]" 
+      <DataTable :value="borrowings" tableStyle="width: 90vw" paginator :rows="10" :totalRecords="120" :rowsPerPageOptions="[10, 20, 30]" 
       sortField="status.name" :sortOrder="1" removableSort v-model:filters="filters" filterDisplay="row" 
-      :globalFilterFields="['copy.edition.book.title', 'copy.signature', 'id', 'pickUpDeadline', 'loanedOn', 'returnDeadline', 'returnedOn', 'status.name', 'charge']">
+      :globalFilterFields="['copy.edition.book.title', 'copy.signature', 'id', 'pickUpDeadline', 'borrowedOn', 'returnDeadline', 'returnedOn', 'status.name', 'charge']">
         <template #header>
           <div class="flex flex-wrap gap-2 align-items-center justify-content-between">
-            <h4 v-if="isUserLoansOwner" class="m-0">Moje wypożyczenia</h4>
-            <h4 v-else class="m-0">Wypożyczenia użytkownika {{ user.name }}</h4>
+            <h4 v-if="isUserBorrowingsOwner" class="m-0">My borrowings</h4>
+            <h4 v-else class="m-0">{{ user.name }}'s borrowings</h4>
             <span class="p-input-icon-left">
-              <Button v-if="showDetails" rounded class="mr-2" @click="showDetails = false" style="margin-right: 5px" label="Szczegóły" />
-              <Button v-else outlined rounded class="mr-2" @click="showDetails = true" style="margin-right: 5px" label="Szczegóły" />
+              <Button v-if="showDetails" rounded class="mr-2" @click="showDetails = false" style="margin-right: 5px" label="Details" />
+              <Button v-else outlined rounded class="mr-2" @click="showDetails = true" style="margin-right: 5px" label="Details" />
               <i class="pi pi-search" style="margin-left:125px" />
-              <InputText v-model="filters['global'].value" placeholder="Słowo klucz" />
+              <InputText v-model="filters['global'].value" placeholder="Keyword" />
             </span>
           </div>
         </template>
-        <template #empty> Nie znaleziono żadnych wypożyczeń. </template>
-        <template #loading> Trwa ładowanie danych. Proszę zaczekać. </template>
-        <Column v-if="showDetails" field="copy.edition.book.title" header="Tytuł" style="width: 11%" sortable>
+        <template #empty> Could not find any data </template>
+        <template #loading> Loading data, please wait. </template>
+        <Column v-if="showDetails" field="copy.edition.book.title" header="Title" style="width: 11%" sortable>
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" 
-            placeholder="Tytuł" />
+            placeholder="Title" />
           </template>
         </Column>
-        <Column v-else field="copy.edition.book.title" header="Tytuł" style="width: 27%" sortable>
+        <Column v-else field="copy.edition.book.title" header="Title" style="width: 27%" sortable>
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" 
-            placeholder="Tytuł" />
+            placeholder="Title" />
           </template>
         </Column>
-        <Column v-if="showDetails" field="copy.signature" header="Egzemplarz" style="width: 11%" sortable>
+        <Column v-if="showDetails" field="copy.signature" header="Copy" style="width: 11%" sortable>
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" 
-            placeholder="Sygnatura" />
+            placeholder="Copy" />
           </template>
         </Column>
-        <Column v-if="showDetails" field="createdOn" header="Data utworzenia" style="width: 11%" sortable>
+        <Column v-if="showDetails" field="createdOn" header="Created on" style="width: 11%" sortable>
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" 
-            placeholder="Data utworzenia" />
+            placeholder="Date" />
           </template>
         </Column>
-        <Column v-if="showDetails" field="pickUpDeadline" header="Termin odbioru" style="width: 11%" sortable>
+        <Column v-if="showDetails" field="pickUpDeadline" header="Pick up deadline" style="width: 11%" sortable>
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" 
-            placeholder="Termin odbioru" />
+            placeholder="Date" />
           </template>
         </Column>
-        <Column v-if="showDetails" field="pickedUpOn" header="Data odbioru" style="width: 11%" sortable>
+        <Column v-if="showDetails" field="pickedUpOn" header="Picked up on" style="width: 11%" sortable>
           <template #body="slotProps">
             <template v-if="slotProps.data.pickedUpOn == null">
               {{ '_' }}
@@ -60,10 +60,10 @@
           </template>
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" 
-            placeholder="Data odbioru" />
+            placeholder="Date" />
           </template>
         </Column>
-        <Column v-if="showDetails" field="returnDeadline" header="Termin zwrotu" style="width: 11%" sortable>
+        <Column v-if="showDetails" field="returnDeadline" header="Return deadline" style="width: 11%" sortable>
           <template #body="slotProps">
             <template v-if="slotProps.data.returnDeadline == null">
               {{ '_' }}
@@ -74,10 +74,10 @@
           </template>
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" 
-            placeholder="Termin zwrotu" />
+            placeholder="Date" />
           </template>
         </Column>
-        <Column v-if="showDetails" field="returnedOn" header="Data zwrotu" style="width: 11%" sortable>
+        <Column v-if="showDetails" field="returnedOn" header="Returned on" style="width: 11%" sortable>
           <template #body="slotProps">
             <template v-if="slotProps.data.returnedOn == null">
               {{ '_' }}
@@ -88,7 +88,7 @@
           </template>
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" 
-            placeholder="Data zwrotu" />
+            placeholder="Date" />
           </template>
         </Column>
         <Column v-if="showDetails" field="status.name" header="Status" style="width: 11%" sortable>
@@ -103,7 +103,7 @@
             placeholder="Status" />
           </template>
         </Column>
-        <Column v-if="showDetails" field="charge" header="Kara" style="width: 11%" sortable>
+        <Column v-if="showDetails" field="charge" header="Charge" style="width: 11%" sortable>
           <template #body="slotProps">
             <div v-if="slotProps.data.charge > 0">
               <div v-if="slotProps.data.hasChargeBeenPaid">
@@ -126,10 +126,10 @@
           </template>
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" 
-            placeholder="Kara" />
+            placeholder="Charge" />
           </template>
         </Column>
-        <Column v-else field="charge" header="Kara" style="width: 27%" sortable>
+        <Column v-else field="charge" header="Charge" style="width: 27%" sortable>
           <template #body="slotProps">
             <div v-if="slotProps.data.charge > 0">
               <div v-if="slotProps.data.hasChargeBeenPaid">
@@ -152,7 +152,7 @@
           </template>
           <template #filter="{ filterModel, filterCallback }">
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" 
-            placeholder="Kara" />
+            placeholder="Charge" />
           </template>
         </Column>
         <Column style="height: 5rem">
@@ -164,7 +164,7 @@
               @click="showNotesDialog(slotProps.data)" 
               style="margin-right: 5px" 
             />
-            <span v-if="slotProps.data.status.name == 'aktywne'">
+            <span v-if="slotProps.data.status.name == 'active'">
               <Button 
                 v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'"
                 icon="pi pi-check" 
@@ -172,7 +172,7 @@
                 @click="showActiveConfirmationDialog(slotProps.data)" 
                 style="margin-right: 5px" />
             </span>
-            <span v-if="slotProps.data.status.name == 'oczekujące'">
+            <span v-if="slotProps.data.status.name == 'awaiting'">
               <Button 
                 v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'"
                 icon="pi pi-sign-in" 
@@ -200,44 +200,44 @@
         </Column>
       </DataTable>
 
-      <Dialog v-model:visible="notesDialog" :style="{width: '450px'}" header="Uwagi" 
+      <Dialog v-model:visible="notesDialog" :style="{width: '450px'}" header="Notes" 
       :modal="true" class="p-fluid">
         <div class="field">
-          <Textarea v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'" v-model="loan.notes" rows="5" cols="30" />
-          <Textarea v-else disabled v-model="loan.notes" rows="5" cols="30" />
+          <Textarea v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'" v-model="borrowing.notes" rows="5" cols="30" />
+          <Textarea v-else disabled v-model="borrowing.notes" rows="5" cols="30" />
         </div>
         <template #footer>
-          <Button v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'" label="Anuluj" icon="pi pi-times" @click="hideDialog()" outlined />
-          <Button v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'" label="Zapisz" icon="pi pi-check" @click="updateLoan()" outlined />
+          <Button v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'" label="Cancel" icon="pi pi-times" @click="hideDialog()" outlined />
+          <Button v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'" label="Save" icon="pi pi-check" @click="updateBorrowing()" outlined />
         </template>
       </Dialog>
 
-      <Dialog v-model:visible="pendingConfirmationDialog" :style="{width: '450px'}" header="Potwierdzenie" 
+      <Dialog v-model:visible="pendingConfirmationDialog" :style="{width: '450px'}" header="Confirmation" 
       :modal="true" class="p-fluid">
-        <p v-if="finalizing">Czy na pewno chcesz aktywować to wypożyczenie?</p>
-        <p v-else>Czy na pewno chcesz anulować to wypożyczenie?</p>
+        <p v-if="finalizing">Are you sure you want to activate this borrowing?</p>
+        <p v-else>Are you sure you want to cancel this borrowing?</p>
         <template #footer>
-          <Button label="Nie" icon="pi pi-times" outlined @click="hideDialog()"/>
-          <Button v-if="finalizing" label="Tak" icon="pi pi-check" outlined @click="activateLoan()" />
-          <Button v-else label="Tak" icon="pi pi-check" outlined @click="cancelLoan()" />
+          <Button label="No" icon="pi pi-times" outlined @click="hideDialog()"/>
+          <Button v-if="finalizing" label="Yes" icon="pi pi-check" outlined @click="activateBorrowing()" />
+          <Button v-else label="Yes" icon="pi pi-check" outlined @click="cancelBorrowing()" />
         </template>
       </Dialog>
 
-      <Dialog v-model:visible="activeConfirmationDialog" :style="{width: '450px'}" header="Potwierdzenie" 
+      <Dialog v-model:visible="activeConfirmationDialog" :style="{width: '450px'}" header="Confirmation" 
       :modal="true" class="p-fluid">
-        <p>Czy na pewno chcesz sfinalizować to wypożyczenie?</p>
+        <p>Are you sure you want to finalize this borrowing?</p>
         <template #footer>
-          <Button label="Nie" icon="pi pi-times" outlined @click="hideDialog()"/>
-          <Button label="Tak" icon="pi pi-check" outlined @click="finalizeLoan()" />
+          <Button label="No" icon="pi pi-times" outlined @click="hideDialog()"/>
+          <Button label="Yes" icon="pi pi-check" outlined @click="finalizeBorrowing()" />
         </template>
       </Dialog>
 
-      <Dialog v-model:visible="chargeConfirmationDialog" :style="{width: '450px'}" header="Potwierdzenie" 
+      <Dialog v-model:visible="chargeConfirmationDialog" :style="{width: '450px'}" header="Confirmation" 
       :modal="true" class="p-fluid">
-        <p>Czy na pewno chcesz oznaczyć karę jako uiszczoną?</p>
+        <p>Are you sure you want to set the charge as paid?</p>
         <template #footer>
-          <Button label="Nie" icon="pi pi-times" outlined @click="hideDialog()"/>
-          <Button label="Tak" icon="pi pi-check" outlined @click="setChargeAsPaid()" />
+          <Button label="No" icon="pi pi-times" outlined @click="hideDialog()"/>
+          <Button label="Yes" icon="pi pi-check" outlined @click="setChargeAsPaid()" />
         </template>
       </Dialog>
     </div>
@@ -247,24 +247,24 @@
 <script>
 import Header from "@/components/nav/Header.vue";
 import { FilterMatchMode } from 'primevue/api';
-import LoanService from '@/services/LoanService';
+import BorrowingService from '@/services/BorrowingService';
 import UserService from '@/services/UserService';
 
 export default {
-  name: "UserLoansView",
+  name: "UserBorrowingsView",
   components: {
     Header
   },
   data() {
     return {
       userId: null,
-      isUserLoansOwner: false,
+      isUserBorrowingsOwner: false,
       user: {
         name: null
       },
-      loans: null,
+      borrowings: null,
       userRole: null,
-      loan: null,
+      borrowing: null,
       pendingConfirmationDialog: false,
       finalizing: false,
       activeConfirmationDialog: false,
@@ -293,16 +293,16 @@ export default {
         this.user = response.data;
       });
     },
-    getLoans(userId) {
-      LoanService.getByUserId(userId).then((response) => {
-        this.loans = response.data;
+    getBorrowings(userId) {
+      BorrowingService.getByUserId(userId).then((response) => {
+        this.borrowings = response.data;
       });
     },
-    showNotesDialog(loan) {
+    showNotesDialog(borrowing) {
       this.notesDialog = true;
-      this.loan = loan;
+      this.borrowing = borrowing;
     },
-    showPendingConfirmationDialog(loan, finalizing) {
+    showPendingConfirmationDialog(borrowing, finalizing) {
       if (finalizing) {
         this.finalizing = true;
       } else {
@@ -310,17 +310,17 @@ export default {
       } 
 
       this.pendingConfirmationDialog = true;
-      this.loan = loan;
+      this.borrowing = borrowing;
     },
-    showActiveConfirmationDialog(loan) {
+    showActiveConfirmationDialog(borrowing) {
       this.activeConfirmationDialog = true;
-      this.loan = loan;
+      this.borrowing = borrowing;
     },
-    showChargeConfirmationDialog(loan) {
+    showChargeConfirmationDialog(borrowing) {
       this.chargeConfirmationDialog = true;
-      this.loan = loan;
+      this.borrowing = borrowing;
 
-      if (loan.hasChargeBeenPaid == 1) {
+      if (borrowing.hasChargeBeenPaid == 1) {
         this.hasChargeBeenPaid = true;
       } else {
         this.hasChargeBeenPaid = false;
@@ -331,64 +331,64 @@ export default {
       this.activeConfirmationDialog = false;
       this.chargeConfirmationDialog = false;
       this.notesDialog = false;
-      this.loan = null;
+      this.borrowing = null;
     },
     hideChargeConfirmationDialog() {
       this.chargeConfirmationDialog = false;
-      this.loan = null;
+      this.borrowing = null;
     },
-    async updateLoan() {
-      const response = await LoanService.update(this.loan);
+    async updateBorrowing() {
+      const response = await BorrowingService.update(this.borrowing);
 
       if (response.status == 200) {
         this.$router.go()
-        this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Wypożyczenie zostało zaktualizowane', life: 3000});
+        this.$toast.add({severity:'success', summary: 'Success', detail: 'The borrowing has been updated', life: 3000});
       } else {
-        this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się zaktualizować wypożyczenia', life: 3000});
+        this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not update the borrowing', life: 3000});
       }
     },
-    async finalizeLoan() {
-      if (this.loan.charge > 0 && !this.loan.hasChargeBeenPaid) {
-        this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Aby sfinalizować wypożyczenie, należy poprzednio uiścić karę', life: 3000});
+    async finalizeBorrowing() {
+      if (this.borrowing.charge > 0 && !this.borrowing.hasChargeBeenPaid) {
+        this.$toast.add({severity:'error', summary: 'Error', detail: 'To finalize the borrowing, the charge must be paid', life: 3000});
       } else {
-        const response = await LoanService.finalize(this.loan.id);
+        const response = await BorrowingService.finalize(this.borrowing.id);
 
         if (response.status == 200) {
           this.$router.go()
-          this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Wypożyczenie zostało sfinalizowane', life: 3000});
+          this.$toast.add({severity:'success', summary: 'Success', detail: 'The borrowing has been finalized', life: 3000});
         } else {
-          this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się sfinalizować wypożyczenia', life: 3000});
+          this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not finalize the borrowing', life: 3000});
         }
       }
     },
-    async activateLoan() {
-      const response = await LoanService.activate(this.loan.id);
+    async activateBorrowing() {
+      const response = await BorrowingService.activate(this.borrowing.id);
 
       if (response.status == 200) {
         this.$router.go()
-        this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Wypożyczenie zostało aktywowane', life: 3000});
+        this.$toast.add({severity:'success', summary: 'Success', detail: 'The borrowing has been activated', life: 3000});
       } else {
-        this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się aktywować wypożyczenia', life: 3000});
+        this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not activate the borrowing', life: 3000});
       }
     },
-    async cancelLoan() {
-      const response = await LoanService.cancel(this.loan.id);
+    async cancelBorrowing() {
+      const response = await BorrowingService.cancel(this.borrowing.id);
 
       if (response.status == 200) {
         this.$router.go()
-        this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Wypożyczenie zostało anulowane', life: 3000});
+        this.$toast.add({severity:'success', summary: 'Success', detail: 'The borrowing has been canceled', life: 3000});
       } else {
-        this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się anulować wypożyczenia', life: 3000});
+        this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not cancel the borrowing', life: 3000});
       }
     },
     async setChargeAsPaid() {
-      const response = await LoanService.setChargeAsPaid(this.loan.id);
+      const response = await BorrowingService.setChargeAsPaid(this.borrowing.id);
 
       if (response.status == 200) {
         this.$router.go()
-        this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Opłata została uznana za uiszczoną', life: 3000});
+        this.$toast.add({severity:'success', summary: 'Success', detail: 'The charge has been paid', life: 3000});
       } else {
-        this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się uznać opłaty za uiszczoną', life: 3000});
+        this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not pay the charge', life: 3000});
       }
     }
   },
@@ -397,11 +397,11 @@ export default {
     this.userId = this.$route.params.userId;
 
     if (this.userId == localStorage.getItem('user-id')) {
-      this.isUserLoansOwner = true;
+      this.isUserBorrowingsOwner = true;
     }
 
     this.getUser(this.userId);
-    this.getLoans(this.userId);
+    this.getBorrowings(this.userId);
   }
 };
 </script>

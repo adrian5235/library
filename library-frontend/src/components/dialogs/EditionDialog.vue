@@ -6,7 +6,7 @@
           <Field v-model="isbn13" name="isbn">
             <span class="p-float-label">
               <InputText v-model="isbn13" aria-describedby="title-help" :class="{ 'p-invalid': errors.isbn }" />
-              <label>Numer isbn</label>
+              <label>ISBN-13</label>
             </span>
           </Field>
           <small id="isbn-help" class="p-error">
@@ -20,7 +20,7 @@
               <span class="p-float-label">
                 <Dropdown v-model="language" :options="languages" optionLabel="name" filter
                 aria-describedby="language-help" :class="{ 'p-invalid': errors.language }" />
-                <label>Język</label>
+                <label>Language</label>
               </span>
             </Field>
             <small id="language-help" class="p-error">
@@ -40,7 +40,7 @@
               <span class="p-float-label">
                 <Dropdown v-model="binding" :options="bindings" optionLabel="name" 
                 aria-describedby="binding-help" :class="{ 'p-invalid': errors.binding }" />
-                <label>Oprawa</label>
+                <label>Binding</label>
               </span>
             </Field>
             <small id="binding-help" class="p-error">
@@ -60,7 +60,7 @@
               <span class="p-float-label">
                 <Dropdown v-model="book" :options="books" optionLabel="title" filter
                 aria-describedby="book-help" :class="{ 'p-invalid': errors.book }" />
-                <label>Książka</label>
+                <label>Book</label>
               </span>
             </Field>
             <small id="book-help" class="p-error">
@@ -80,7 +80,7 @@
               <span class="p-float-label">
                 <Dropdown v-model="publisher" :options="publishers" optionLabel="name" filter
                 aria-describedby="publisher-help" :class="{ 'p-invalid': errors.publisher }" />
-                <label>Wydawnictwo</label>
+                <label>Publisher</label>
               </span>
             </Field>
             <small id="publisher-help" class="p-error">
@@ -100,7 +100,7 @@
               <span class="p-float-label">
                 <Dropdown v-model="translator" :options="translators" optionLabel="name" filter
                 aria-describedby="translator-help" :class="{ 'p-invalid': errors.translator }" />
-                <label>Tłumacz</label>
+                <label>Translator</label>
               </span>
             </Field>
             <small id="translator-help" class="p-error">
@@ -118,7 +118,7 @@
           <Field v-model="releaseYear" name="releaseYear">
             <span class="p-float-label">
               <InputText v-model="releaseYear" aria-describedby="releaseYear-help" :class="{ 'p-invalid': errors.releaseYear }" />
-              <label>Rok wydania</label>
+              <label>Release year</label>
             </span>
           </Field>
           <small id="releaseYear-help" class="p-error">
@@ -130,7 +130,7 @@
           <Field v-model="numberOfPages" name="numberOfPages">
             <span class="p-float-label">
               <InputText v-model="numberOfPages" aria-describedby="numberOfPages-help" :class="{ 'p-invalid': errors.numberOfPages }" />
-              <label>Ilość stron</label>
+              <label>Number of pages</label>
             </span>
           </Field>
           <small id="numberOfPages-help" class="p-error">
@@ -142,7 +142,7 @@
           <Field v-model="weight" name="weight">
             <span class="p-float-label">
               <InputText v-model="weight" aria-describedby="weight-help" :class="{ 'p-invalid': errors.weight }" />
-              <label>Waga</label>
+              <label>Weight</label>
             </span>
           </Field>
           <small id="weight-help" class="p-error">
@@ -154,7 +154,7 @@
           <Field v-model="dimensions" name="dimensions">
             <span class="p-float-label">
               <InputText v-model="dimensions" aria-describedby="dimensions-help" :class="{ 'p-invalid': errors.dimensions }" />
-              <label>Wymiary</label>
+              <label>Dimensions</label>
             </span>
           </Field>
           <small id="dimensions-help" class="p-error">
@@ -164,8 +164,8 @@
       </div>
 
       <div class="footer">
-        <Button label="Anuluj" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
-        <Button type="submit" label="Zapisz" icon="pi pi-check" outlined />
+        <Button label="Cancel" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
+        <Button type="submit" label="Save" icon="pi pi-check" outlined />
       </div>
     </Form>
   </Dialog>
@@ -246,16 +246,15 @@ export default {
   },
   data() {
     const schema = yup.object({
-      isbn: yup.string().trim().required('Numer isbn jest wymagany').length(13, 'Numer isbn musi składać się z 13 znaków'),
-      book: yup.object().required('Książka jest wymagana'),
-      publisher: yup.object().required('Wydawnictwo jest wymagane'),
-      translator: yup.object().required('Tłumacz jest wymagany'),
-      releaseYear: yup.number().typeError('Rok musi składać się z cyfr').required('Rok wydania jest wymagany'),
-      language: yup.object().required('Język jest wymagany'),
-      binding: yup.object().required('Oprawa jest wymgana'),
-      numberOfPages: yup.number().typeError('Ilość stron musi składać się z cyfr').required('Ilość stron jest wymagana'),
-      weight: yup.string().required('Waga jest wymagana'),
-      dimensions: yup.string().required('Wymiary są wymagane')
+      isbn: yup.string().trim().required('The ISBN-13 is required').length(13, 'The ISBN-13 must consist of 13 characters'),
+      book: yup.object().required('The book is required'),
+      publisher: yup.object().required('The publisher is required'),
+      releaseYear: yup.number().typeError('The release year must be a number').required('The release year is required'),
+      language: yup.object().required('The language is required'),
+      binding: yup.object().required('The binding is required'),
+      numberOfPages: yup.number().typeError('The number of pages must be a number').required('The number of pages is required'),
+      weight: yup.string().required('The weight is required'),
+      dimensions: yup.string().required('The dimensions are required')
     });
 
     return {
@@ -307,19 +306,19 @@ export default {
         // update
         EditionService.update(this.edition).then((response) => {
           if (response.status == 200) {
-            this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zaktualizowano wydanie', life: 10000});
+            this.$toast.add({severity:'success', summary: 'Success', detail: 'The edition has been updated', life: 10000});
             if (this.editionImage) {
               this.uploadEditionImage(response.data.id);
             }
             // this.$router.go();
           } else {
-            this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się zaktualizować wydania', life: 10000});
+            this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not update the edition', life: 10000});
           }
         });
       } else /* create */ {
         EditionService.create(this.edition).then((response) => {
           if (response.status == 200) {
-            this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zapisano nowe wydanie', life: 10000});
+            this.$toast.add({severity:'success', summary: 'Success', detail: 'The new edition has been saved', life: 10000});
             this.$parent.editions.push(response.data);
             if (this.$parent.copy) {
               this.$parent.edition = response.data;
@@ -329,7 +328,7 @@ export default {
               this.uploadEditionImage(response.data.edition.id);
             }
           } else {
-            this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się zapisać nowego wydania', life: 10000});
+            this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not save the new edition', life: 10000});
           }
         })
       }
@@ -373,7 +372,7 @@ export default {
     this.getTranslators();
 
     if (this.editMode) {
-      this.header = 'Edycja wydania';
+      this.header = 'Edit edition';
       this.edition = this.$parent.edition;
       this.isbn13 = this.edition.isbn13;
       this.releaseYear = this.edition.releaseYear;
@@ -389,7 +388,7 @@ export default {
       this.publisher = this.edition.publisher;
       this.translator = this.edition.translator;
     } else {
-      this.header = 'Nowe wydanie';
+      this.header = 'New edition';
     }
   }
 };

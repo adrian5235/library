@@ -1,4 +1,4 @@
-package com.adrian.library.loan;
+package com.adrian.library.borrowing;
 
 import com.adrian.library.reservation.BookAlreadyReservedException;
 import com.adrian.library.user.UserLacksActionPointsException;
@@ -13,16 +13,16 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin("http://localhost:8081")
-@RequestMapping("/loans")
+@RequestMapping("/borrowings")
 @PreAuthorize("hasAnyRole('READER', 'LIBRARIAN', 'ADMIN')")
-public class LoanController {
+public class BorrowingController {
 
-    private final LoanServiceImpl service;
-    private final LoanMapper mapper;
+    private final BorrowingServiceImpl service;
+    private final BorrowingMapper mapper;
 
     @GetMapping
-    @PreAuthorize("hasAuthority('loan:read')")
-    List<LoanDTO> getAll() {
+    @PreAuthorize("hasAuthority('borrowing:read')")
+    List<BorrowingDTO> getAll() {
         return service.getAll()
                 .stream()
                 .map(mapper::toDto)
@@ -30,8 +30,8 @@ public class LoanController {
     }
 
     @GetMapping("/user/{userId}")
-    @PreAuthorize("@userServiceImpl.hasId(#userId) or hasAuthority('loan:read')")
-    List<LoanDTO> getByUserId(@PathVariable @P("userId") Integer userId) {
+    @PreAuthorize("@userServiceImpl.hasId(#userId) or hasAuthority('borrowing:read')")
+    List<BorrowingDTO> getByUserId(@PathVariable @P("userId") Integer userId) {
         return service.getByUserId(userId)
                 .stream()
                 .map(mapper::toDto)
@@ -39,45 +39,46 @@ public class LoanController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('loan:read')")
-    LoanDTO get(@PathVariable Integer id) {
+    @PreAuthorize("hasAuthority('borrowing:read')")
+    BorrowingDTO get(@PathVariable Integer id) {
         return mapper.toDto(service.get(id));
     }
 
     @PostMapping
-    Loan create(@RequestParam Integer userId, @RequestParam Integer editionId)
-            throws BookAlreadyLoanedException, BookAlreadyReservedException, UserLacksActionPointsException {
-        return service.create(userId, editionId, null);
+    @PreAuthorize("hasAuthority('borrowing:create')")
+    Borrowing create(@RequestParam Integer editionId, @RequestParam(required = false) Integer userId)
+            throws BookAlreadyBorrowedException, BookAlreadyReservedException, UserLacksActionPointsException {
+        return service.create(editionId, userId, null);
     }
 
     @PutMapping
-    @PreAuthorize("hasAuthority('loan:update')")
-    Loan update(@RequestBody LoanDTO loanDto) {
-        return service.update(mapper.toEntity(loanDto));
+    @PreAuthorize("hasAuthority('borrowing:update')")
+    Borrowing update(@RequestBody BorrowingDTO borrowingDto) {
+        return service.update(mapper.toEntity(borrowingDto));
     }
 
     @PutMapping("/{id}/activate")
-    @PreAuthorize("hasAuthority('loan:update')")
+    @PreAuthorize("hasAuthority('borrowing:update')")
     void activate(@PathVariable Integer id) {
         service.activate(id);
     }
 
     @PutMapping("/{id}/finalize")
-    @PreAuthorize("hasAuthority('loan:update')")
-    void finish(@PathVariable Integer id) throws BookAlreadyLoanedException, BookAlreadyReservedException,
+    @PreAuthorize("hasAuthority('borrowing:update')")
+    void finish(@PathVariable Integer id) throws BookAlreadyBorrowedException, BookAlreadyReservedException,
             UserLacksActionPointsException {
         service.finalize(id);
     }
 
     @PutMapping("/{id}/cancel")
-    @PreAuthorize("hasAuthority('loan:cancel')")
-    void cancel(@PathVariable Integer id) throws BookAlreadyReservedException, BookAlreadyLoanedException,
+    @PreAuthorize("hasAuthority('borrowing:cancel')")
+    void cancel(@PathVariable Integer id) throws BookAlreadyReservedException, BookAlreadyBorrowedException,
             UserLacksActionPointsException {
         service.cancel(id);
     }
 
     @PutMapping("/{id}/chargePaid")
-    @PreAuthorize("hasAuthority('loan:update')")
+    @PreAuthorize("hasAuthority('borrowing:update')")
     void setChargeAsPaid(@PathVariable Integer id) {
         service.setChargeAsPaid(id);
     }

@@ -4,21 +4,21 @@
     <div class="card">
       <Toolbar class="border-top-none; border-left-none; border-right-none">
         <template #start>
-          <h3 class="m-0">Książki</h3>
+          <h3 class="m-0">Books</h3>
         </template>
         <template #center>
           <div class="flex flex-wrap gap-2">
-            <Button v-if="showOnlyAvailable" rounded class="mr-2" @click="showOnlyAvailable = false; filter()" label="Pokaż tylko dostępne" />
-            <Button v-else rounded outlined class="mr-2" @click="showOnlyAvailable = true; filter()" label="Pokaż tylko dostępne" />
-            <MultiSelect v-model="selectedGenres" :options="genres" optionLabel="name" placeholder="Wybierz gatunki"
+            <Button v-if="showOnlyAvailable" rounded class="mr-2" @click="showOnlyAvailable = false; filter()" label="Only the available" />
+            <Button v-else rounded outlined class="mr-2" @click="showOnlyAvailable = true; filter()" label="Only the available" />
+            <MultiSelect v-model="selectedGenres" :options="genres" optionLabel="name" placeholder="Genre(s)"
               filter @change="filter()" />
             <Button v-if="selectedGenres && selectedGenres.length" rounded outlined class="mr-2" icon="pi pi-times" @click="selectedGenres = null; filter()" />
-            <MultiSelect v-model="selectedAuthors" :options="authors" optionLabel="name" placeholder="Wybierz autorów"
+            <MultiSelect v-model="selectedAuthors" :options="authors" optionLabel="name" placeholder="Author(s)"
               filter @change="filter()" />
             <Button v-if="selectedAuthors && selectedAuthors.length" rounded outlined class="mr-2" icon="pi pi-times" @click="selectedAuthors = null; filter()" />
             <span class="p-input-icon-left">
               <i class="pi pi-search" />
-              <InputText v-model="searchValue" placeholder="Słowo klucz" @keyup="filter()" />
+              <InputText v-model="searchValue" placeholder="Keyword" @keyup="filter()" />
             </span>
           </div>
         </template>
@@ -30,8 +30,8 @@
             <div class="p-4 border-1 surface-border surface-card border-round">
               <div class="flex flex-wrap align-items-center justify-content-between gap-2">
                 <span class="overflow-hidden white-space-nowrap text-overflow-ellipsis" style="max-width: 56%">{{ genresToString(slotProps.data.book.genres) }}</span>
-                <Tag v-if="slotProps.data.quantity > 0" value="dostępna" severity="success"></Tag>
-                <Tag v-else value="niedostępna" severity="danger"></Tag>
+                <Tag v-if="slotProps.data.quantity > 0" value="available" severity="success"></Tag>
+                <Tag v-else value="unavailable" severity="danger"></Tag>
               </div>
               <div class="flex flex-column align-items-center gap-3 py-5">
                 <img v-if="slotProps.data.image" class="shadow-2 border-round" style="height: 150px" :src="require('@/assets/img/' + slotProps.data.image.name)" />
@@ -39,7 +39,7 @@
                 <span class="font-bold overflow-hidden white-space-nowrap text-overflow-ellipsis" style="max-width: 100%">{{ slotProps.data.book.title }}</span>
                 <span class="overflow-hidden white-space-nowrap text-overflow-ellipsis" style="max-width: 100%">{{ authorsToString(slotProps.data.book.authors) }}</span>
                 <div class="flex gap-3">
-                  <Button label="Wybierz" @click="this.$router.push({
+                  <Button label="Choose" @click="this.$router.push({
                     name: 'edition',
                     params: {
                       edition: JSON.stringify(slotProps.data),

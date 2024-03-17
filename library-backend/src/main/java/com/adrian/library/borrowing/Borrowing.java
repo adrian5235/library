@@ -1,7 +1,7 @@
-package com.adrian.library.loan;
+package com.adrian.library.borrowing;
 
 import com.adrian.library.copy.Copy;
-import com.adrian.library.loan.status.LoanStatus;
+import com.adrian.library.borrowing.status.BorrowingStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import com.adrian.library.reservation.Reservation;
@@ -16,8 +16,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name = "loans")
-public class Loan {
+@Table(name = "borrowings")
+public class Borrowing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -53,14 +53,14 @@ public class Loan {
 
     @ManyToOne
     @JoinColumn(name = "statusId")
-    private LoanStatus status;
+    private BorrowingStatus status;
 
     @OneToOne
     @JoinColumn(name = "reservationId", referencedColumnName = "id")
     private Reservation reservation;
 
-    public Loan(LocalDate createdOn, LocalDate pickUpDeadline, LocalDate pickedUpOn, LocalDate returnDeadline,
-                LocalDate returnedOn, Copy copy, User user, LoanStatus status) {
+    public Borrowing(LocalDate createdOn, LocalDate pickUpDeadline, LocalDate pickedUpOn, LocalDate returnDeadline,
+                     LocalDate returnedOn, Copy copy, User user, BorrowingStatus status) {
         this.createdOn = createdOn;
         this.pickUpDeadline = pickUpDeadline;
         this.pickedUpOn = pickedUpOn;

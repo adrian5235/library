@@ -1,11 +1,11 @@
 package com.adrian.library.reservation;
 
 import com.adrian.library.book.BookRepository;
+import com.adrian.library.borrowing.BookAlreadyBorrowedException;
+import com.adrian.library.borrowing.Borrowing;
+import com.adrian.library.borrowing.BorrowingServiceImpl;
 import com.adrian.library.edition.Edition;
 import com.adrian.library.edition.EditionRepository;
-import com.adrian.library.loan.BookAlreadyLoanedException;
-import com.adrian.library.loan.Loan;
-import com.adrian.library.loan.LoanServiceImpl;
 import com.adrian.library.reservation.status.ReservationStatusRepository;
 import com.adrian.library.user.User;
 import com.adrian.library.user.UserLacksActionPointsException;
@@ -13,6 +13,8 @@ import com.adrian.library.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,12 +29,12 @@ public class ReservationServiceImpl implements ReservationService {
     private final ReservationStatusRepository reservationStatusRepository;
     private final BookRepository bookRepository;
     private final EditionRepository editionRepository;
-    private LoanServiceImpl loanService;
+    private BorrowingServiceImpl borrowingService;
     private final Logger logger = LoggerFactory.getLogger(ReservationServiceImpl.class);
 
     @Override
-    public void setLoanService(LoanServiceImpl loanService) {
-        this.loanService = loanService;
+    public void setBorrowingService(BorrowingServiceImpl borrowingService) {
+        this.borrowingService = borrowingService;
     }
 
     @Override
@@ -51,12 +53,14 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public Reservation create(Integer userId, Integer bookId, Integer editionId, LocalDate waitDeadline)
-            throws BookAlreadyReservedException, BookAlreadyLoanedException, UserLacksActionPointsException {
+    public Reservation create(Integer bookId, Integer editionId, LocalDate waitDeadline)
+            throws BookAlreadyReservedException, BookAlreadyBorrowedException, UserLacksActionPointsException {
         Reservation reservation = new Reservation();
-        User user = userRepository.getReferenceById(userId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        User user = userRepository.findByEmail(currentPrincipalName).get();
         List<Reservation> reservations = user.getReservations();
-        List<Loan> loans = user.getLoans();
+        List<Borrowing> borrowings = user.getBorrowings();
 
         if (user.getActionPoints() <= 0) {
             throw new UserLacksActionPointsException();
@@ -64,33 +68,33 @@ public class ReservationServiceImpl implements ReservationService {
 
         // if user has already reserved this book, throw exception
         for (Reservation userReservation : reservations) {
-            if (userReservation.getStatus().getName().equals("aktywna")) {
+            if (userReservation.getStatus().getName().equals("active")) {
                 if (userReservation.getBook().getId() == bookId) {
                     throw new BookAlreadyReservedException();
                 }
             }
         }
 
-        // if user has already loaned this book, throw exception
-        for (Loan userLoan : loans) {
-            String status = userLoan.getStatus().getName();
-            if (status.equals("aktywne") || status.equals("oczekujące")) {
-                if (userLoan.getCopy().getEdition().getBook().getId() == bookId) {
-                    throw new BookAlreadyLoanedException();
+        // if user has already borrowed a copy of this book, throw exception
+        for (Borrowing userBorrowing : borrowings) {
+            String status = userBorrowing.getStatus().getName();
+            if (status.equals("active") || status.equals("awaiting")) {
+                if (userBorrowing.getCopy().getEdition().getBook().getId() == bookId) {
+                    throw new BookAlreadyBorrowedException();
                 }
             }
         }
 
         reservation.setCreatedOn(LocalDate.now());
-        reservation.setUser(userRepository.getReferenceById(userId));
-        // set loan status as an active
+        reservation.setUser(user);
+        // set borrowing status to active
         reservation.setStatus(reservationStatusRepository.getReferenceById(1));
         reservation.setBook(bookRepository.getReferenceById(bookId));
 
         if (editionId != null) {
             reservation.setEdition(editionRepository.getReferenceById(editionId));
         }
-        // due to lack of the primevue calendar zone configuration
+        // due to lack of the PrimeVue calendar zone configuration
         if (waitDeadline != null) {
             reservation.setWaitDeadline(waitDeadline.plusDays(1));
         }
@@ -100,19 +104,19 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationRepository.save(reservation);
     }
 
-    // create loan out of the reservation if a copy is available
+    // create borrowing out of the reservation if a copy is available
     @Override
-    public void loan() throws BookAlreadyLoanedException, BookAlreadyReservedException, UserLacksActionPointsException {
+    public void borrow() throws BookAlreadyBorrowedException, BookAlreadyReservedException, UserLacksActionPointsException {
         List<Reservation> reservations = reservationRepository.findAll();
 
         for (Reservation reservation : reservations) {
-            if (reservation.getStatus().getName().equals("aktywna")) {
+            if (reservation.getStatus().getName().equals("active")) {
                 Edition edition = reservation.getEdition();
                 if (edition != null) {
                     if (edition.getQuantity() > 0) {
                         reservation.setStatus(reservationStatusRepository.getReferenceById(2));
                         reservationRepository.save(reservation);
-                        loanService.create(reservation.getUser().getId(), edition.getId(), reservation);
+                        borrowingService.create(edition.getId(), null, reservation);
                     }
                 } else {
                     List<Edition> editions = reservation.getBook().getEditions();
@@ -120,7 +124,7 @@ public class ReservationServiceImpl implements ReservationService {
                         if (edition1.getQuantity() > 0) {
                             reservation.setStatus(reservationStatusRepository.getReferenceById(2));
                             reservationRepository.save(reservation);
-                            loanService.create(reservation.getUser().getId(), edition1.getId(), reservation);
+                            borrowingService.create(edition1.getId(), null, reservation);
                         }
                     }
                 }
@@ -149,7 +153,7 @@ public class ReservationServiceImpl implements ReservationService {
     public void cancelReservations() {
         List<Reservation> reservations = reservationRepository.findAll();
         for (Reservation reservation : reservations) {
-            if (reservation.getStatus().getName().equals("aktywna")) {
+            if (reservation.getStatus().getName().equals("active")) {
                 LocalDate waitDeadline =  reservation.getWaitDeadline();
                 if (waitDeadline != null) {
                     if (LocalDate.now().isAfter(waitDeadline)) {

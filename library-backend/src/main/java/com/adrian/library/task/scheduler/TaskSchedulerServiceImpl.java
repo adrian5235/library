@@ -1,6 +1,6 @@
 package com.adrian.library.task.scheduler;
 
-import com.adrian.library.loan.BookAlreadyLoanedException;
+import com.adrian.library.borrowing.BookAlreadyBorrowedException;
 import com.adrian.library.reservation.BookAlreadyReservedException;
 import com.adrian.library.task.TaskServiceImpl;
 import com.adrian.library.user.UserLacksActionPointsException;
@@ -14,21 +14,21 @@ public class TaskSchedulerServiceImpl implements TaskSchedulerService {
 
     private final TaskServiceImpl taskService;
 
-    // charge loans that have expired (return deadline has passed)
+    // charge borrowings that have expired (return deadline has passed)
     // repeat every day at 00:00
     @Override
     @Scheduled(cron = "0 0 0 * * ?")
-    public void chargeLoansSchedule() {
-        taskService.chargeLoans();
+    public void chargeBorrowingsSchedule() {
+        taskService.chargeBorrowings();
     }
 
-    // cancel loans that haven't been picked up (pick up deadline has passed)
+    // cancel borrowings that haven't been picked up (pick up deadline has passed)
     // repeat every day at 00:00
     @Override
     @Scheduled(cron = "0 0 0 * * ?")
-    public void cancelLoansSchedule() throws UserLacksActionPointsException, BookAlreadyReservedException,
-            BookAlreadyLoanedException {
-        taskService.cancelLoans();
+    public void cancelBorrowingsSchedule() throws UserLacksActionPointsException, BookAlreadyReservedException,
+            BookAlreadyBorrowedException {
+        taskService.cancelBorrowings();
     }
 
     // cancel reservations whose waiting deadline has expired

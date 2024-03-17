@@ -2,7 +2,7 @@ package com.adrian.library.reservation;
 
 import com.adrian.library.book.Book;
 import com.adrian.library.edition.Edition;
-import com.adrian.library.loan.Loan;
+import com.adrian.library.borrowing.Borrowing;
 import com.adrian.library.reservation.status.ReservationStatus;
 import com.adrian.library.user.User;
 import com.adrian.library.user.UserRepository;
@@ -26,9 +26,9 @@ public class ReservationMapper {
         Book book = reservation.getBook();
         Edition edition = reservation.getEdition();
         int userId = reservation.getUser().getId();
-        Loan loan = reservation.getLoan();
+        Borrowing borrowing = reservation.getBorrowing();
 
-        return new ReservationDTO(id, createdOn, waitDeadline, notes, status, book, edition, userId, loan);
+        return new ReservationDTO(id, createdOn, waitDeadline, notes, status, book, edition, userId, borrowing);
     }
 
     public Reservation toEntity(ReservationDTO reservationDTO) {
@@ -40,8 +40,8 @@ public class ReservationMapper {
         Book book = reservationDTO.getBook();
         Edition edition = reservationDTO.getEdition();
         User user = userRepository.getReferenceById(reservationDTO.getUserId());
-        Loan loan = reservationDTO.getLoan();
+        Borrowing borrowing = reservationDTO.getBorrowing();
 
-        return new Reservation(id, createdOn, waitDeadline, notes, status, book, edition, user, loan);
+        return new Reservation(id, createdOn, waitDeadline, notes, status, book, edition, user, borrowing);
     }
 }

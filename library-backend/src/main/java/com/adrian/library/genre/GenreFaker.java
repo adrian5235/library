@@ -1,16 +1,16 @@
 package com.adrian.library.genre;
 
 import com.github.javafaker.Faker;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class GenreFaker {
 
-    @Autowired
-    GenreRepository genreRepository;
+    private final GenreRepository genreRepository;
     private final Faker faker = new Faker();
 
     public void saveGenres(int n) {

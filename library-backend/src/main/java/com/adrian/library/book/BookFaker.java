@@ -2,31 +2,30 @@ package com.adrian.library.book;
 
 import com.adrian.library.author.Author;
 import com.adrian.library.author.AuthorRepository;
-import com.adrian.library.language.Language;
-import com.adrian.library.language.LanguageRepository;
 import com.adrian.library.genre.Genre;
 import com.adrian.library.genre.GenreRepository;
+import com.adrian.library.language.Language;
+import com.adrian.library.language.LanguageRepository;
 import com.github.javafaker.Faker;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 @Component
+@RequiredArgsConstructor
 public class BookFaker {
 
-    @Autowired
-    BookRepository bookRepository;
-    @Autowired
-    AuthorRepository authorRepository;
-    @Autowired
-    GenreRepository genreRepository;
-    @Autowired
-    LanguageRepository languageRepository;
+    private final BookRepository bookRepository;
+    private final AuthorRepository authorRepository;
+    private final GenreRepository genreRepository;
+    private final LanguageRepository languageRepository;
     private final Faker faker = new Faker();
-    Random r = new Random();
-    int m;
+    private final Random r = new Random();
+    private int m;
 
     @Transactional
     public void saveBooks(int n) {
@@ -44,9 +43,9 @@ public class BookFaker {
                 randomTitle = faker.book().title();
             }
 
-            // if language is polish, there is 50% chance title is not original so book has been translated
-            if (randomLanguage.getName().equals("język polski")) {
-                if (r.nextInt(1, 2) == 1) {
+            // if language is english, there is 33% chance title is not original so book has been translated
+            if (randomLanguage.getName().equals("english")) {
+                if (r.nextInt(1, 3) == 1) {
                     randomTitleOriginal = faker.book().title();
                     while (randomTitleOriginal.equals(randomTitle)) {
                         randomTitleOriginal = faker.book().title();

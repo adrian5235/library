@@ -5,7 +5,7 @@
         <Field v-model="name" name="name">
           <span class="p-float-label">
             <InputText v-model="name" autofocus aria-describedby="name-help" :class="{ 'p-invalid': errors.name }" />
-            <label>Nazwa</label>
+            <label>Name</label>
           </span>
         </Field>
         <small id="name-help" class="p-error">
@@ -14,8 +14,8 @@
       </div>
 
       <div class="footer">
-        <Button label="Anuluj" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
-        <Button type="submit" label="Zapisz" icon="pi pi-check" outlined />
+        <Button label="Cancel" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
+        <Button type="submit" label="Save" icon="pi pi-check" outlined />
       </div>
     </Form>
   </Dialog>
@@ -36,7 +36,7 @@ export default {
   },
   data() {
     const schema = yup.object({
-      name: yup.string().trim().required('Nazwa jest wymagana')
+      name: yup.string().trim().required('The name is required')
     });
 
     return {
@@ -55,7 +55,7 @@ export default {
       if (this.editMode) /* update */ {
         PublisherService.update(this.publisher).then((response) => {
           if (response.status == 200) {
-            this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zaktualizowano wydawnictwo', life: 10000});
+            this.$toast.add({severity:'success', summary: 'Success', detail: 'The publisher has been updated', life: 10000});
             for (var i = 0; i < this.$parent.publishers.length; i++) {
               if (this.$parent.publishers[i].id == response.data.id) {
                 this.$parent.publishers[i] = response.data;
@@ -65,17 +65,17 @@ export default {
               this.$parent.edition.publisher = response.data;
             }
           } else {
-            this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Zaktualizowanie wydawnictwa nie powiodło się', life: 10000});
+            this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not update the publisher', life: 10000});
           }
         })
       } else /* create */ {
         PublisherService.create(this.publisher).then((response) => {
           if (response.status == 200) {
-            this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zapisano nowe wydawnictwo', life: 10000});
+            this.$toast.add({severity:'success', summary: 'Success', detail: 'The new publisher has been saved', life: 10000});
             this.$parent.publishers.push(response.data);
             this.$parent.publisher = response.data;
           } else {
-            this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Zapisanie nowego wydawnictwa nie powiodło się', life: 10000});
+            this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not save the new publisher', life: 10000});
           }
         });
       }
@@ -88,11 +88,11 @@ export default {
   },
   mounted() {
     if (this.editMode) {
-      this.header = 'Edycja wydawnictwa';
+      this.header = 'Edit publisher';
       this.publisher = this.$parent.publisher;
       this.name = this.publisher.name;
     } else {
-      this.header = 'Nowe wydawnictwo';
+      this.header = 'New publisher';
     }
   }
 };

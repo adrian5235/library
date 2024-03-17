@@ -6,7 +6,7 @@
           <span class="p-float-label">
             <InputText v-bind="field" v-model="name" autofocus 
             aria-describedby="name-help" :class="{ 'p-invalid': errors.name }" />
-            <label>Nazwa</label>
+            <label>Name</label>
           </span>
         </Field>
         <small id="name-help" class="p-error">
@@ -15,8 +15,8 @@
       </div>
 
       <div class="footer">
-        <Button label="Anuluj" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
-        <Button type="submit" label="Zapisz" icon="pi pi-check" outlined />
+        <Button label="Cancel" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
+        <Button type="submit" label="Save" icon="pi pi-check" outlined />
       </div>
     </Form>
   </Dialog>
@@ -37,7 +37,7 @@ export default {
   },
   data() {
     const schema = yup.object({
-      name: yup.string().trim().required('Nazwa jest wymagana')
+      name: yup.string().trim().required('The name is required')
     });
 
     return {
@@ -55,7 +55,7 @@ export default {
       if (this.editMode) /* update */ {
         BindingService.update(this.binding).then((response) => {
           if (response.status == 200) {
-            this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zaktualizowano oprawę', life: 10000});
+            this.$toast.add({severity:'success', summary: 'Success', detail: 'The binding has been updated', life: 10000});
             for (var i = 0; i < this.$parent.bindings.length; i++) {
               if (this.$parent.bindings[i].id == response.data.id) {
                 this.$parent.bindings[i] = response.data;
@@ -65,7 +65,7 @@ export default {
               this.$parent.edition.binding = response.data;
             }
           } else {
-            this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Zaktualizowanie oprawy nie powiodło się', life: 10000});
+            this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not update the binding', life: 10000});
           }
         });
       } else /* create */ {
@@ -73,12 +73,12 @@ export default {
         var existingBinding = this.$parent.bindings.find((binding) => binding.name == this.binding.name);
         if (!existingBinding) {
           BindingService.create(this.binding).then((response) => {
-            this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Zapisano nową oprawę', life: 10000});
+            this.$toast.add({severity:'success', summary: 'Success', detail: 'The new binding has been saved', life: 10000});
             if (response.status == 200) {
               this.$parent.bindings.push(response.data);
               this.$parent.binding = response.data;
             } else {
-              this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Zapisanie nowej oprawy nie powiodło się', life: 10000});
+              this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not save the new binding', life: 10000});
             }
           });
         } else {
@@ -94,11 +94,11 @@ export default {
   },
   mounted() {
     if (this.editMode) {
-      this.header = 'Edycja oprawy';
+      this.header = 'Edit binding';
       this.binding = this.$parent.binding;
       this.name = this.binding.name;
     } else {
-      this.header = 'Nowa oprawa';
+      this.header = 'New binding';
     }
   }
 };

@@ -2,15 +2,15 @@
   <Header />
   <div class="flex justify-content-center">
     <div style="width: 90vw">
-      <h3 style="margin-bottom: 15px;">Statystyki</h3>
+      <h3 style="margin-bottom: 15px;">Statistics</h3>
       <Toolbar class="mb-4">
         <template #start>
-          <Button v-if="mostPopularBooks == true" label="Najpopularniejsze książki" @click="hideAll(); mostPopularBooks = true" />
-          <Button v-else label="Najpopularniejsze książki" @click="hideAll(); mostPopularBooks = true" outlined />
-          <Button v-if="mostPopularAuthors == true" label="Najpopularniejsi autorzy" @click="hideAll(); mostPopularAuthors = true" style="margin-left: 15px" />
-          <Button v-else label="Najpopularniejsi autorzy" @click="hideAll(); mostPopularAuthors = true" style="margin-left: 15px" outlined />
-          <Button v-if="mostPopularGenres == true" label="Najpopularniejsze gatunki" @click="hideAll(); mostPopularGenres = true" style="margin-left: 15px" />
-          <Button v-else label="Najpopularniejsze gatunki" @click="hideAll(); mostPopularGenres = true" style="margin-left: 15px" outlined />
+          <Button v-if="mostPopularBooks == true" label="Most popular books" @click="hideAll(); mostPopularBooks = true" />
+          <Button v-else label="Most popular books" @click="hideAll(); mostPopularBooks = true" outlined />
+          <Button v-if="mostPopularAuthors == true" label="Most popular authors" @click="hideAll(); mostPopularAuthors = true" style="margin-left: 15px" />
+          <Button v-else label="Most popular authors" @click="hideAll(); mostPopularAuthors = true" style="margin-left: 15px" outlined />
+          <Button v-if="mostPopularGenres == true" label="Most popular genres" @click="hideAll(); mostPopularGenres = true" style="margin-left: 15px" />
+          <Button v-else label="Most popular genres" @click="hideAll(); mostPopularGenres = true" style="margin-left: 15px" outlined />
         </template>
       </Toolbar>
     </div>

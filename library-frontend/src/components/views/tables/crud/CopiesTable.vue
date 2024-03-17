@@ -4,7 +4,7 @@
     <div class="card">
       <Toolbar class="mb-4">
         <template #start>
-          <Button label="Nowy" icon="pi pi-plus" severity="success" @click="copyDialog=true" outlined />
+          <Button label="Add" icon="pi pi-plus" severity="success" @click="copyDialog=true" outlined />
         </template>
       </Toolbar>
 
@@ -13,56 +13,56 @@
       :globalFilterFields="['signature', 'quality', 'purchaseDate', 'price']">
         <template #header>
           <div class="flex flex-wrap gap-2 align-items-center justify-content-between">
-            <h4 class="m-0">Egzemplarze</h4>
+            <h4 class="m-0">Copies</h4>
             <div class="flex justify-content-end gap-2">
-              <Button v-if="showDetails" @click="showDetails = false" label="Szczegóły" rounded class="mr-2" />
-              <Button v-else outlined @click="showDetails = true" label="Szczegóły" rounded class="mr-2" />
-              <Button v-if="showOnlyAvailable" rounded class="mr-2" @click="showOnlyAvailable = false; filter()" label="Pokaż tylko dostępne" />
-              <Button v-else rounded outlined class="mr-2" @click="showOnlyAvailable = true; filter()" label="Pokaż tylko dostępne" />
+              <Button v-if="showDetails" @click="showDetails = false" label="Details" rounded class="mr-2" />
+              <Button v-else outlined @click="showDetails = true" label="Details" rounded class="mr-2" />
+              <Button v-if="showOnlyAvailable" rounded class="mr-2" @click="showOnlyAvailable = false; filter()" label="Only the available" />
+              <Button v-else rounded outlined class="mr-2" @click="showOnlyAvailable = true; filter()" label="Only the available" />
               <span class="p-input-icon-left">
                 <i class="pi pi-search" />
-                <InputText v-model="filters['global'].value" placeholder="Słowo klucz" />
+                <InputText v-model="filters['global'].value" placeholder="Keyword" />
               </span>
             </div>
           </div>
         </template>
-        <template #empty> Nie znaleziono żadnych egzemplarzy. </template>
-        <template #loading> Trwa ładowanie danych. Proszę zaczekać. </template>
+        <template #empty> Could not find any copies </template>
+        <template #loading> Loading data, please wait. </template>
 
-        <Column field="signature" header="Sygnatura" sortable>
+        <Column field="signature" header="Signature" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Sygnatura" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Signature" />
           </template>
         </Column>
 
-        <Column field="purchaseDate" header="Data zakupu" sortable>
+        <Column field="purchaseDate" header="Purchase date" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Data zakupu" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Purchase date" />
           </template>
         </Column>
 
-        <Column field="price" header="Cena" sortable>
+        <Column field="price" header="Price" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Cena" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Price" />
           </template>
         </Column>
 
-        <Column v-if="showDetails" field="edition.isbn13" header="Wydanie" sortable>
+        <Column v-if="showDetails" field="edition.isbn13" header="Edition" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Numer ISBN" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="ISBN-13" />
           </template>
         </Column>
 
-        <Column v-if="showDetails" field="edition.book.title" header="Książka" sortable>
+        <Column v-if="showDetails" field="edition.book.title" header="Book" sortable>
           <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Tytuł" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Title" />
           </template>
         </Column>
 
-        <Column field="available" header="Dostępność" sortable>
+        <Column field="available" header="Availability" sortable>
           <template #body="slotProps">
-            <div v-if="slotProps.data.available">{{ 'Dostępny' }}</div>
-            <div v-else>{{ 'Niedostępny' }}</div>
+            <div v-if="slotProps.data.available">{{ 'Available' }}</div>
+            <div v-else>{{ 'Unavailable' }}</div>
           </template>
         </Column>
 

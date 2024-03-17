@@ -1,6 +1,6 @@
 package com.adrian.library.user;
 
-import com.adrian.library.loan.LoanServiceImpl;
+import com.adrian.library.borrowing.BorrowingServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository repository;
-    private final Logger logger = LoggerFactory.getLogger(LoanServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(BorrowingServiceImpl.class);
 
     @Override
     public List<User> getAll() {

@@ -10,16 +10,16 @@
 
         <div>
           <h3 style="margin-bottom: 15px">{{ book.title }}</h3>
-          <p v-if="book.authors.length == 1">Autor: {{ authors }}</p>
-          <p v-else>Autorzy: {{ authors }}</p>
-          <p v-if="book.genres.length == 1">Gatunek: {{ genres }} </p>
-          <p v-else>Gatunki: {{ genres }} </p>
-          <p>Język: {{ edition.language.name }}</p>
+          <p v-if="book.authors.length == 1">Author: {{ authors }}</p>
+          <p v-else>Authors: {{ authors }}</p>
+          <p v-if="book.genres.length == 1">Genre: {{ genres }} </p>
+          <p v-else>Genres: {{ genres }} </p>
+          <p>Language: {{ edition.language.name }}</p>
 
           <div class="flex gap-3">
-            <Button v-if="edition.quantity > 0" label="Wypożycz" @click="showLoanDialog()" outlined></Button>
-            <Button v-else-if="edition.quantity == 0" label="Zarezerwuj" @click="showReservationDialog()" outlined></Button>
-            <Button label="Inne wydania" @click="this.$router.push({
+            <Button v-if="edition.quantity > 0" label="Borrow" @click="showBorrowingDialog()" outlined></Button>
+            <Button v-else-if="edition.quantity == 0" label="Reserve" @click="showReservationDialog()" outlined></Button>
+            <Button label="Other editions" @click="this.$router.push({
               name: 'bookEditions',
               params: {
                 book: JSON.stringify(this.book),
@@ -30,17 +30,17 @@
             </Button>
           </div>
 
-          <h4 style="margin-top: 50px; margin-bottom: 20px">Szczegółowe informacje</h4>
-          <p>ISBN: {{ edition.isbn13 }}</p>
-          <p v-if="book.titleOriginal">Oryginalny tytuł: {{ book.titleOriginal }}</p>
-          <p v-if="edition.translator">Przetłumaczył: {{ edition.translator.name }}</p>
-          <p>Oprawa: {{ edition.binding.name }}</p>
-          <p>Wydawnictwo: {{ edition.publisher.name }}</p>
-          <p v-if="edition.name">Nazwa wydania: {{ edition.name }}</p>
-          <p>Rok wydania: {{ edition.releaseYear }}</p>
-          <p>Liczba stron: {{ edition.numberOfPages }}</p>
-          <p>Waga: {{ edition.weight }}</p>
-          <p>Wymiary: {{ edition.dimensions }}</p>
+          <h4 style="margin-top: 50px; margin-bottom: 20px">Book details</h4>
+          <p>ISBN-13: {{ edition.isbn13 }}</p>
+          <p v-if="book.titleOriginal">Original title: {{ book.titleOriginal }}</p>
+          <p v-if="edition.translator">Translated by: {{ edition.translator.name }}</p>
+          <p>Binding: {{ edition.binding.name }}</p>
+          <p>Publisher: {{ edition.publisher.name }}</p>
+          <p v-if="edition.name">Edition name: {{ edition.name }}</p>
+          <p>Release year: {{ edition.releaseYear }}</p>
+          <p>Number of pages: {{ edition.numberOfPages }}</p>
+          <p>Weight: {{ edition.weight }}</p>
+          <p>Dimensions: {{ edition.dimensions }}</p>
 
           <div v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'" style="margin-top: 20px">
             <FileUpload accept="image/*" :maxFileSize="1000000" @select="onFileSelected($event)">
@@ -57,7 +57,7 @@
                 </div>
               </template>
               <template #empty>
-                <p>Przeciągnij i upuść zdjęcie tutaj, aby je przesłać.</p>
+                <p>Drag and drop the image here to upload it</p>
               </template>
             </FileUpload>
           </div>
@@ -65,61 +65,61 @@
       </div>
       <div v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'" style="width: 800px; overflow-wrap: break-word; margin-top: 10px">
         <Accordion v-if="book.description">
-          <AccordionTab header="Opis">{{ book.description }}</AccordionTab>
+          <AccordionTab header="Description">{{ book.description }}</AccordionTab>
         </Accordion>
       </div>
       <div v-else style="width: 800px; overflow-wrap: break-word; margin-top: -125px">
         <Accordion v-if="book.description">
-          <AccordionTab header="Opis">{{ book.description }}</AccordionTab>
+          <AccordionTab header="Description">{{ book.description }}</AccordionTab>
         </Accordion>
       </div>
     </div>
   </div>
 
-  <Dialog v-model:visible="loanDialog" :style="{width: '450px'}" header="Informacje o wypożyczeniu" :modal="true" class="p-fluid">
+  <Dialog v-model:visible="borrowingDialog" :style="{width: '450px'}" header="Borrowing" :modal="true" class="p-fluid">
     <div v-if="userRole == 'LIBRARIAN' || userRole == 'ADMIN'" class="field">
-      <label for="user">Wypożycz jako</label>
-      <Dropdown v-model="user" :options="readers" optionLabel="name" placeholder="Wybierz" filter />
+      <label for="user">Borrow as</label>
+      <Dropdown v-model="user" :options="readers" optionLabel="name" placeholder="Choose" filter />
     </div>
     <div class="field">
-      <label for="title">Tytuł</label>
+      <label for="title">Title</label>
       <InputText id="title" v-model="book.title" readonly />
     </div>
     <div class="field">
-      <label for="edition" :set="editionInfo = edition.publisher.name + ', ' + edition.binding.name + ' ' + edition.releaseYear">Wydanie</label>
+      <label for="edition" :set="editionInfo = edition.publisher.name + ', ' + edition.binding.name + ' ' + edition.releaseYear">Edition</label>
       <InputText id="edition" v-model="editionInfo" readonly />
     </div>
     <div class="field">
-      <label for="waitingForPickupUntil">Oczekuje na odbiór do</label>
-      <InputText id="waitingForPickupUntil" v-model="waitingForPickupUntil" readonly />
+      <label for="waitingForPickUpUntil">Waiting for pick up until</label>
+      <InputText id="waitingForPickUpUntil" v-model="waitingForPickUpUntil" readonly />
     </div>
     <template #footer>
-      <Button label="Anuluj" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
-      <Button label="Zatwierdź" icon="pi pi-check" @click="loan()" outlined />
+      <Button label="Cancel" class="p-button-secondary" icon="pi pi-times" @click="hideDialog()" outlined />
+      <Button label="Confirm" icon="pi pi-check" @click="borrow()" outlined />
     </template>
   </Dialog>
 
-  <Dialog v-model:visible="reservationDialog" :style="{width: '450px'}" header="Informacje o rezerwacji" :modal="true" class="p-fluid">
+  <Dialog v-model:visible="reservationDialog" :style="{width: '450px'}" header="Reservation" :modal="true" class="p-fluid">
     <div class="field">
-      <label for="title">Tytuł</label>
+      <label for="title">Title</label>
       <InputText id="title" v-model="book.title" readonly />
     </div>
     <div class="field">
-      <label for="edition" :set="editionInfo = edition.publisher.name + ', ' + edition.binding.name + ' ' + edition.releaseYear">Wydanie</label>
+      <label for="edition" :set="editionInfo = edition.publisher.name + ', ' + edition.binding.name + ' ' + edition.releaseYear">Edition</label>
       <InputText id="edition" v-if="checked" v-model="editionInfo" readonly />
-      <InputText id="edition" v-else readonly placeholder="Pierwsze wydanie, które stanie się dostepne" />
+      <InputText id="edition" v-else readonly placeholder="The first edition to be available" />
       <InputSwitch v-if="disable" disabled v-model="checked" style="margin-top:15px" />
       <InputSwitch v-else v-model="checked" style="margin-top:15px" />
     </div>
     <div class="field">
-      <label for="waitDeadline">Termin oczekiwania</label>
+      <label for="waitDeadline">Wait deadline</label>
       <div class="card flex justify-content-center">
-        <Calendar id="waitDeadline" v-model="waitDeadline" :manualInput="false" showIcon showButtonBar placeholder="Wybierz datę" />
+        <Calendar id="waitDeadline" v-model="waitDeadline" :manualInput="false" showIcon showButtonBar placeholder="Choose date" />
       </div>
     </div>
     <template #footer>
-      <Button label="Anuluj" class="p-button-secondary" icon="pi pi-times" @click="hideDialog(); waitDeadline = null" outlined />
-      <Button label="Zatwierdź" icon="pi pi-check" @click="reserve()" outlined />
+      <Button label="Cancel" class="p-button-secondary" icon="pi pi-times" @click="hideDialog(); waitDeadline = null" outlined />
+      <Button label="Confirm" icon="pi pi-check" @click="reserve()" outlined />
     </template>
   </Dialog>
 
@@ -132,7 +132,7 @@
 import Header from "@/components/nav/Header.vue";
 import EditionService from "@/services/EditionService";
 import BookService from "@/services/BookService";
-import LoanService from "@/services/LoanService";
+import BorrowingService from "@/services/BorrowingService";
 import ReservationService from "@/services/ReservationService";
 import StorageService from '@/services/StorageService';
 import UserService from '@/services/UserService';
@@ -167,9 +167,9 @@ export default {
         genres: []
       },
       available: this.$route.params.available,
-      loanDialog: false,
+      borrowingDialog: false,
       reservationDialog: false,
-      waitingForPickupUntil: new Date(),
+      waitingForPickUpUntil: new Date(),
       editionInfo: null,
       waitDeadline: null,
       checked: true,
@@ -205,41 +205,46 @@ export default {
         }))
       })
     },
-    async loan() {
+    async borrow() {
       if (this.user.actionPoints < 1) {
-        this.$toast.add({severity:'error', summary: 'Błąd',
-        detail: 'Nie udało się wypożyczyć książki, ponieważ wykorzystano limit 5 wypożyczeń/rezerwacji', life: 10000});
+        this.$toast.add({severity:'error', summary: 'Error',
+        detail: 'Could borrow the book due to borrowings/reservations limit reached', life: 10000});
       } else {
-        const response = await LoanService.create(this.user.id, this.editionId);
+        var response;
+        if (this.user.name != localStorage.getItem("user-name")) {
+          response = await BorrowingService.create(this.editionId, this.user.id);
+        } else {
+          response = await BorrowingService.create(this.editionId);
+        }
         if (response && response.status == 200) {
-          this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Pomyślnie wypożyczono książkę', life: 10000});
+          this.$toast.add({severity:'success', summary: 'Success', detail: 'The book has been borrowed', life: 10000});
           this.$router.push({
-            name: "userLoans",
+            name: "userBorrowings",
             params: { userId: this.user.id },
           });
         } else {
-          this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się wypożyczyć książki', life: 10000});
+          this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not borrow the book', life: 10000});
           this.hideDialog();
         }
       }
     },
     async reserve() {
       if (this.user.actionPoints < 1) {
-        this.$toast.add({severity:'error', summary: 'Błąd',
-        detail: 'Nie udało się zarezerwować książki, ponieważ wykorzystano limit 5 wypożyczeń/rezerwacji', life: 10000});
+        this.$toast.add({severity:'error', summary: 'Error',
+        detail: 'Could reserve the book due to borrowings/reservations limit reached', life: 10000});
       } else {
         if (!this.checked) {
           this.editionId = null;
         }
-        const response = await ReservationService.create(localStorage.getItem("user-id"), this.bookId, this.editionId, this.waitDeadline);
+        const response = await ReservationService.create(this.bookId, this.editionId, this.waitDeadline);
         if (response && response.status == 200) {
-          this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Pomyślnie zarezerwowano książkę', life: 10000});
+          this.$toast.add({severity:'success', summary: 'Success', detail: 'The book has been reserved', life: 10000});
           this.$router.push({
             name: "userReservations",
-            params: { userId: localStorage.getItem("user-id") },
+            params: { userId: this.user.id },
           });
         } else {
-          this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się zarezerwować książki', life: 10000});
+          this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not reserve the book', life: 10000});
         }
       }
     },
@@ -249,22 +254,22 @@ export default {
     uploadEditionImage() {
       StorageService.uploadEditionImage(this.editionImage, this.edition.id).then((response) => {
         if (response.status == 200) {
-          this.$toast.add({severity:'success', summary: 'Sukces', detail: 'Pomyślnie przesłano zdjęcie', life: 10000});
+          this.$toast.add({severity:'success', summary: 'Success', detail: 'The image has been uploaded', life: 10000});
         } else {
-          this.$toast.add({severity:'error', summary: 'Błąd', detail: 'Nie udało się przesłać zdjęcia', life: 10000});
+          this.$toast.add({severity:'error', summary: 'Error', detail: 'Could not upload the image', life: 10000});
         }
       });
     },
-    showLoanDialog() {
+    showBorrowingDialog() {
       if (!localStorage.getItem("user-token")) {
         this.$router.push({
           name: "login",
         });
       } else if (localStorage.getItem('user-role') == 'USER') {
-        this.$toast.add({severity:'error', summary: 'Błąd',
-        detail: 'Nie posiadasz uprawnień do wypożyczania książek. W celu ich nabycia zgłoś się do bibliotekarza.', life: 10000});
+        this.$toast.add({severity:'error', summary: 'Error',
+        detail: 'You have no permission to borrow the book, please contact the librarian', life: 10000});
       } else {
-        this.loanDialog = true;
+        this.borrowingDialog = true;
       }
     },
     showReservationDialog() {
@@ -273,14 +278,14 @@ export default {
           name: "login",
         });
       } else if (localStorage.getItem('user-role') == 'USER') {
-        this.$toast.add({severity:'error', summary: 'Błąd',
-        detail: 'Nie posiadasz uprawnień do rezerwacji książek. W celu ich nabycia zgłoś się do bibliotekarza.', life: 10000});
+        this.$toast.add({severity:'error', summary: 'Error',
+        detail: 'You have no permission to reserve the book, please contact the librarian', life: 10000});
       } else {
         this.reservationDialog = true;
       }
     },
     hideDialog() {
-      this.loanDialog = false;
+      this.borrowingDialog = false;
       this.reservationDialog = false;
       this.bookDialog = false;
     },
@@ -308,8 +313,8 @@ export default {
     }
 
     this.areThereManyUnavailableBookEditions();
-    this.waitingForPickupUntil.setDate(this.waitingForPickupUntil.getDate() + 7);
-    this.waitingForPickupUntil = this.waitingForPickupUntil.toJSON().slice(0,10);
+    this.waitingForPickUpUntil.setDate(this.waitingForPickUpUntil.getDate() + 7);
+    this.waitingForPickUpUntil = this.waitingForPickUpUntil.toJSON().slice(0,10);
   },
   computed : {
     authors() {

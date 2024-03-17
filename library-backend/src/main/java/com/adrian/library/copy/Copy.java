@@ -3,7 +3,7 @@ package com.adrian.library.copy;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import com.adrian.library.edition.Edition;
-import com.adrian.library.loan.Loan;
+import com.adrian.library.borrowing.Borrowing;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -37,7 +37,7 @@ public class Copy {
 
     @JsonIgnore
     @OneToMany(mappedBy = "copy")
-    private List<Loan> loans = new ArrayList<>();
+    private List<Borrowing> borrowings = new ArrayList<>();
 
     public Copy(String signature, LocalDate purchaseDate, double price, Edition edition) {
         this.signature = signature;

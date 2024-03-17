@@ -28,7 +28,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             .email(request.getEmail())
             .password(passwordEncoder.encode(request.getPassword()))
             .role(Role.USER)
-            .actionPoints(Constants.actionPoints)
+            .actionPoints(Constants.getActionPoints())
             .build();
         repository.save(user);
         var jwt = jwtService.generateToken(user, false);
@@ -90,10 +90,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String token = jwtService.generateToken(repository.findByEmail(email).get(), true);
         String link = "http://localhost:8081/password/reset?token=" + token;
 
-        message.setFrom(Constants.email);
+        message.setFrom(Constants.getEmail());
         message.setTo(email);
-        message.setSubject("Przypomnienie hasła");
-        message.setText("Kliknij w link, aby zresetować hasło: " + link);
+        message.setSubject("Reset password");
+        message.setText("Click on the link to reset your password: " + link);
         mailSender.send(message);
     }
 

@@ -1,21 +1,21 @@
 package com.adrian.library.edition;
 
+import com.adrian.library.binding.Binding;
 import com.adrian.library.book.Book;
 import com.adrian.library.book.BookDTO;
 import com.adrian.library.book.BookMapper;
-import com.adrian.library.binding.Binding;
 import com.adrian.library.language.Language;
 import com.adrian.library.publisher.Publisher;
 import com.adrian.library.storage.FileData;
 import com.adrian.library.translator.Translator;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class EditionMapper {
 
-    @Autowired
-    private BookMapper bookMapper;
+    private final BookMapper bookMapper;
 
     public EditionDTO toDto(Edition edition) {
         int id = edition.getId();

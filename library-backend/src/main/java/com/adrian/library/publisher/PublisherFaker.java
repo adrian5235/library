@@ -1,16 +1,16 @@
 package com.adrian.library.publisher;
 
 import com.github.javafaker.Faker;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class PublisherFaker {
 
-    @Autowired
-    PublisherRepository publisherRepository;
+    private final PublisherRepository publisherRepository;
     private final Faker faker = new Faker();
 
     public void savePublishers(int n) {

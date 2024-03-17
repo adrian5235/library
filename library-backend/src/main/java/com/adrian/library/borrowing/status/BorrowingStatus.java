@@ -1,8 +1,8 @@
-package com.adrian.library.loan.status;
+package com.adrian.library.borrowing.status;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import com.adrian.library.loan.Loan;
+import com.adrian.library.borrowing.Borrowing;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -14,8 +14,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @ToString
-@Table(name = "loan_statuses")
-public class LoanStatus {
+@Table(name = "borrowing_statuses")
+public class BorrowingStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -24,5 +24,5 @@ public class LoanStatus {
 
     @JsonIgnore
     @OneToMany(mappedBy = "status")
-    private List<Loan> loans = new ArrayList<>();
+    private List<Borrowing> borrowings = new ArrayList<>();
 }

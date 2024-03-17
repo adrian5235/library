@@ -1,6 +1,6 @@
 package com.adrian.library.reservation;
 
-import com.adrian.library.loan.BookAlreadyLoanedException;
+import com.adrian.library.borrowing.BookAlreadyBorrowedException;
 import com.adrian.library.user.UserLacksActionPointsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,11 +47,11 @@ public class ReservationController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('reservation:create')")
-    Reservation create(@RequestParam Integer userId, @RequestParam Integer bookId,
+    Reservation create(@RequestParam Integer bookId,
                        @RequestParam(required = false) Integer editionId,
                        @RequestParam(required = false) LocalDate waitDeadline)
-            throws BookAlreadyReservedException, BookAlreadyLoanedException, UserLacksActionPointsException {
-        return service.create(userId, bookId, editionId, waitDeadline);
+            throws BookAlreadyReservedException, BookAlreadyBorrowedException, UserLacksActionPointsException {
+        return service.create(bookId, editionId, waitDeadline);
     }
 
     @PutMapping

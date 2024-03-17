@@ -1,13 +1,13 @@
-package com.adrian.library.loan;
+package com.adrian.library.borrowing;
 
+import com.adrian.library.borrowing.status.BorrowingStatus;
+import com.adrian.library.borrowing.status.BorrowingStatusRepository;
 import com.adrian.library.copy.Copy;
 import com.adrian.library.copy.CopyRepository;
-import com.adrian.library.loan.status.LoanStatus;
-import com.adrian.library.loan.status.LoanStatusRepository;
 import com.adrian.library.user.User;
 import com.adrian.library.user.UserRepository;
 import com.github.javafaker.Faker;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -18,20 +18,17 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class LoanFaker {
+@RequiredArgsConstructor
+public class BorrowingFaker {
 
-    @Autowired
-    CopyRepository copyRepository;
-    @Autowired
-    LoanRepository loanRepository;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    LoanStatusRepository loanStatusRepository;
+    private final CopyRepository copyRepository;
+    private final BorrowingRepository borrowingRepository;
+    private final UserRepository userRepository;
+    private final BorrowingStatusRepository borrowingStatusRepository;
     private final Faker faker = new Faker();
-    Random r = new Random();
+    private final Random r = new Random();
 
-    public void saveLoans(int n) {
+    public void saveBorrowings(int n) {
         for (int i = 0; i < n; i ++) {
             Calendar calendar = Calendar.getInstance();
             Date date = faker.date().past(500, 31, TimeUnit.DAYS);
@@ -44,9 +41,9 @@ public class LoanFaker {
             LocalDate returnedOn = pickedUpOn.plusDays(r.nextInt(30));
             Copy copy = randomCopy();
             User user = randomUser();
-            LoanStatus status = loanStatusRepository.findByName("zakończone");
+            BorrowingStatus status = borrowingStatusRepository.findByName("finalized");
 
-            loanRepository.save(new Loan(createdOn, pickUpDeadline, pickedUpOn, returnDeadline,
+            borrowingRepository.save(new Borrowing(createdOn, pickUpDeadline, pickedUpOn, returnDeadline,
                     returnedOn, copy, user, status));
 
             copyRepository.save(copy);

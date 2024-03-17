@@ -27,11 +27,4 @@ public class Author {
     public Author(String name) {
         this.name = name;
     }
-
-    @PreRemove
-    private void removeBookAssociations() {
-        for (Book book: books) {
-            book.getAuthors().remove(this);
-        }
-    }
 }

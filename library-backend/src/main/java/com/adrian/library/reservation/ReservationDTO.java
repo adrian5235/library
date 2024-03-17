@@ -2,7 +2,7 @@ package com.adrian.library.reservation;
 
 import com.adrian.library.book.Book;
 import com.adrian.library.edition.Edition;
-import com.adrian.library.loan.Loan;
+import com.adrian.library.borrowing.Borrowing;
 import com.adrian.library.reservation.status.ReservationStatus;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,5 +23,5 @@ public class ReservationDTO {
     private final Book book;
     private final Edition edition;
     private final int userId;
-    private final Loan loan;
+    private final Borrowing borrowing;
 }

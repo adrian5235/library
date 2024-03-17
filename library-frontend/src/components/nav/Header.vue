@@ -18,11 +18,11 @@
       <template #end>
         <div class="sm:mr-8">
           <span v-if="returnDeadlineIsComing" style="color:orangered; margin-right: 20px; font-size: 20px">
-           !!! Zbliża się termin zwrotu, pozostała ilośc dni: {{ daysToReturnDeadline }} !!!</span>
-          <span v-else-if="returnDeadlineHasPassed" style="color:red; margin-right: 20px; font-size: 20px">!!! Termin zwrotu minął !!!</span>
+           !!! The return deadline is approaching, days remaining: {{ daysToReturnDeadline }} !!!</span>
+          <span v-else-if="returnDeadlineHasPassed" style="color:red; margin-right: 20px; font-size: 20px">!!! The return deadline has passed !!!</span>
           <Menu v-if="loggedIn" ref="menu" id="overlay_menu" :model="itemsRight" :popup="true" style="font-size: 17px" />
           <Avatar v-if="loggedIn" :label="avatarLabel" shape="circle" @click="toggle($event)" />
-          <Button v-else @click="login()" icon="pi pi-sign-in" style="background-color: #333; border: none" label="Zaloguj się"></Button>
+          <Button v-else @click="login()" icon="pi pi-sign-in" style="background-color: #333; border: none" label="Log in"></Button>
         </div>
       </template>
     </Menubar>
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import LoanService from '@/services/LoanService';
+import BorrowingService from '@/services/BorrowingService';
 
 export default {
   name: "Header",
@@ -38,7 +38,7 @@ export default {
     return {
       itemsLeft: [
         {
-          label: 'Strona główna',
+          label: 'Homepage',
           icon: 'pi pi-home',
           command: () => {
             this.$router.push('/');
@@ -73,74 +73,74 @@ export default {
 
       if (this.userRole == 'LIBRARIAN' || this.userRole == 'ADMIN') {
         this.itemsLeft.push({
-          label: 'Zarządzaj',
+          label: 'Manage',
           icon: 'pi pi-folder',
           items: [
             {
-              label: 'Użytkownicy',
+              label: 'Users',
               icon: 'pi pi-folder-open',
               command: () => {
                 this.$router.push('/users');
               }
             },
             {
-              label: 'Egzemplarze',
+              label: 'Copies',
               icon: 'pi pi-folder-open',
               command: () => {
                 this.$router.push('/copies');
               }
             },
             {
-              label: 'Wydania',
+              label: 'Editions',
               icon: 'pi pi-folder-open',
               command: () => {
                 this.$router.push('/editions');
               }
             },
             {
-              label: 'Książki',
+              label: 'Books',
               icon: 'pi pi-folder-open',
               command: () => {
                 this.$router.push('/books');
               }
             },
             {
-              label: 'Autorzy',
+              label: 'Authors',
               icon: 'pi pi-folder-open',
               command: () => {
                 this.$router.push('/authors');
               }
             },
             {
-              label: 'Gatunki',
+              label: 'Genres',
               icon: 'pi pi-folder-open',
               command: () => {
                 this.$router.push('/genres');
               }
             },
             {
-              label: 'Języki',
+              label: 'Languages',
               icon: 'pi pi-folder-open',
               command: () => {
                 this.$router.push('/languages');
               }
             },
             {
-              label: 'Wydawnictwa',
+              label: 'Publishers',
               icon: 'pi pi-folder-open',
               command: () => {
                 this.$router.push('/publishers');
               }
             },
             {
-              label: 'Tłumacze',
+              label: 'Translators',
               icon: 'pi pi-folder-open',
               command: () => {
                 this.$router.push('/translators');
               }
             },
             {
-              label: 'Oprawy',
+              label: 'Bindings',
               icon: 'pi pi-folder-open',
               command: () => {
                 this.$router.push('/bindings');
@@ -158,7 +158,7 @@ export default {
 
       if (this.userRole == 'LIBRARIAN' || this.userRole == 'ADMIN' || this.userRole == 'READER') {
         this.itemsLeft.push({
-          label: 'Statystyki',
+          label: 'Statistics',
           icon: 'pi pi-chart-bar',
           command: () => {
             this.$router.push('/stats');
@@ -166,18 +166,18 @@ export default {
         });
 
         this.itemsRight[0].items.push({
-          label: 'Wypożyczenia',
+          label: 'Borrowings',
           icon: 'pi pi-folder-open',
           command: () => {
             this.$router.push({
-              name: "userLoans",
+              name: "userBorrowings",
               params: { userId: localStorage.getItem("user-id") },
             });
           },
         });
 
         this.itemsRight[0].items.push({
-          label: 'Rezerwacje',
+          label: 'Reservations',
           icon: 'pi pi-folder-open',
           command: () => {
             this.$router.push({
@@ -189,7 +189,7 @@ export default {
       }
 
       this.itemsRight[0].items.push({
-          label: 'Zmień hasło',
+          label: 'Change password',
           icon: 'pi pi-user',
           command: () => {
             this.$router.push({
@@ -199,7 +199,7 @@ export default {
         });
 
       this.itemsRight[0].items.push({
-        label: 'Wyloguj się',
+        label: 'Log out',
         icon: 'pi pi-sign-out',
         command: () => {
           localStorage.clear();
@@ -207,12 +207,12 @@ export default {
         }
       });
 
-      LoanService.getByUserId(localStorage.getItem('user-id')).then((response) => {
-        this.loans = response.data;
-        if (this.loans.length > 0) {
-          this.loans.forEach((loan) => {
-            if (loan.status.name == "aktywne") {
-              var returnDeadline = Date.parse(loan.returnDeadline);
+      BorrowingService.getByUserId(localStorage.getItem('user-id')).then((response) => {
+        this.borrowings = response.data;
+        if (this.borrowings.length > 0) {
+          this.borrowings.forEach((borrowing) => {
+            if (borrowing.status.name == "active") {
+              var returnDeadline = Date.parse(borrowing.returnDeadline);
               var today = Date.parse(new Date());
               if (today > returnDeadline) {
                 this.returnDeadlineHasPassed = true;
@@ -231,21 +231,21 @@ export default {
 
     this.itemsLeft.push(
       {
-        label: 'O bibliotece',
+        label: 'About',
         icon: 'pi pi-home',
         command: () => {
           this.$router.push('/about');
         }
       },
       {
-        label: 'Regulamin',
+        label: 'Rules',
         icon: 'pi pi-home',
         command: () => {
           this.$router.push('/rules');
         }
       },
       {
-        label: 'Kontakt',
+        label: 'Contact',
         icon: 'pi pi-home',
         command: () => {
           this.$router.push('/contact');

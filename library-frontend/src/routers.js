@@ -18,7 +18,7 @@ import BooksGrid from './components/views/grids/BooksGrid.vue';
 import EditionsGrid from './components/views/grids/EditionsGrid.vue';
 import EditionDetails from './components/views/EditionDetails.vue';
 import UsersTable from './components/views/tables/UsersTable';
-import UserLoansTable from './components/views/tables/user/UserLoansTable.vue';
+import UserBorrowingsTable from './components/views/tables/user/UserBorrowingsTable.vue';
 import UserReservationsTable from './components/views/tables/user/UserReservationsTable.vue';
 import Statistics from './components/views/Statistics.vue';
 import About from './components/views/About.vue';
@@ -133,9 +133,9 @@ const routes = [
     }
   },
   {
-    name: 'userLoans',
-    component: UserLoansTable,
-    path: '/users/:userId/loans',
+    name: 'userBorrowings',
+    component: UserBorrowingsTable,
+    path: '/users/:userId/borrowings',
     beforeEnter(to, from, next) {
       if (isAuthenticated()) {
         if (isAuthorizedAs('READER')) {

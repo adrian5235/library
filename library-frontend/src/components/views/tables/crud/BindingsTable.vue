@@ -4,7 +4,7 @@
     <div class="card">
       <Toolbar class="mb-4">
         <template #start>
-          <Button label="Nowa" icon="pi pi-plus" severity="success" @click="bindingDialog=true" outlined />
+          <Button label="Add" icon="pi pi-plus" severity="success" @click="bindingDialog=true" outlined />
         </template>
       </Toolbar>
 
@@ -12,17 +12,17 @@
       removableSort v-model:filters="filters" filterDisplay="row" :globalFilterFields="['name']">
         <template #header>
           <div class="flex flex-wrap gap-2 align-items-center justify-content-between">
-            <h4 class="m-0">Oprawy</h4>
+            <h4 class="m-0">Bindings</h4>
             <div class="flex justify-content-end gap-2">
               <span class="p-input-icon-left">
                 <i class="pi pi-search" />
-                <InputText v-model="filters['global'].value" placeholder="Słowo klucz" />
+                <InputText v-model="filters['global'].value" placeholder="Keyword" />
               </span>
             </div>
           </div>
         </template>
-        <template #empty> Nie znaleziono żadnych opraw. </template>
-        <template #loading> Trwa ładowanie danych. Proszę zaczekać. </template>
+        <template #empty> Could not find any bindings </template>
+        <template #loading> Loading data, please wait. </template>
 
         <Column field="name" header="Nazwa" sortable>
           <template #filter="{ filterModel, filterCallback }">

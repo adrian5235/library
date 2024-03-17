@@ -2,7 +2,7 @@
   <Header />
   <Form @submit="register()" :validation-schema="schema" v-slot="{ errors }">
     <div class="w-full flex flex-column align-items-center gap-5">
-      <h3 style="margin-bottom: 15px;">Rejestracja</h3>
+      <h3 style="margin-bottom: 15px;">Register</h3>
       <div>
         <Field name="email" v-slot="{ field }">
           <span class="p-float-label">
@@ -16,12 +16,12 @@
         </small>
       </div>
 
-      <div>
+      <div style="width: 212px">
         <Field name="firstName" v-slot="{ field }">
           <span class="p-float-label">
             <InputText v-bind="field" v-model="firstName"
             aria-describedby="firstName-help" :class="{ 'p-invalid': errors.firstName }" />
-            <label>Imię</label>
+            <label>First name</label>
           </span>
         </Field>
         <small id="firstName-help" class="p-error">
@@ -34,7 +34,7 @@
           <span class="p-float-label">
             <InputText v-bind="field" v-model="lastName"
             aria-describedby="lastName-help" :class="{ 'p-invalid': errors.lastName }" />
-            <label>Nazwisko</label>
+            <label>Last name</label>
           </span>
         </Field>
         <small id="lastName-help" class="p-error">
@@ -47,7 +47,7 @@
           <span class="p-float-label">
             <InputText v-bind="field" v-model="password" type="password"
             aria-describedby="password-help" :class="{ 'p-invalid': errors.password }" />
-            <label>Hasło</label>
+            <label>Password</label>
           </span>
         </Field>
         <small id="password-help" class="p-error">
@@ -60,7 +60,7 @@
           <span class="p-float-label">
             <InputText v-bind="field" v-model="confirmPassword" type="password"
             aria-describedby="confirmPassword-help" :class="{ 'p-invalid': errors.confirmPassword }" />
-            <label>Powtórz hasło</label>
+            <label>Confirm password</label>
           </span>
         </Field>
         <small id="confirmPassword-help" class="p-error">
@@ -69,11 +69,11 @@
       </div>
 
       <div class="footer">
-        <Button label="Wyczyść" type="reset" class="p-button-secondary" outlined />
-        <Button label="Zarejestruj" type="submit" severity="success" outlined />
+        <Button label="Reset" type="reset" class="p-button-secondary" outlined />
+        <Button label="Submit" type="submit" severity="success" outlined />
       </div>
       
-      <Button label="Zaloguj się" @click="$router.push({ name: 'login'})" icon="pi pi-user" outlined style="margin-top: -15px" />
+      <Button label="Log in" @click="$router.push({ name: 'login'})" icon="pi pi-user" outlined style="margin-top: -15px" />
     </div>
   </Form>
 </template>
@@ -93,18 +93,18 @@ export default {
   },
   data() {
     const schema = yup.object({
-      email: yup.string().trim().required('Email jest wymagany').email('Niepoprawny adres email'),
-      firstName: yup.string().required('Imię jest wymagane').matches(/^[a-zA-Z ]*$/, 'Imię musi składać się z liter'),
-      lastName: yup.string().required('Nazwisko jest wymagane').matches(/^[a-zA-Z ]*$/, 'Nazwisko musi składać się z liter'),
-      password: yup.string().required('Hasło jest wymagane')
-        .min(8, 'Hasło musi składać się z przynajmniej 8 znaków')
-        .minUppercase(1, 'Hasło musi zawierać przynajmniej jedną dużą literę')
-        .minNumbers(1, 'Hasło musi zawierać przynajmniej jedną cyfrę')
-        .minSymbols(1, 'Hasło musi zawierać przynajmniej jeden znak specjalny'),
-      confirmPassword: yup.string().required('Należy powtórzyć hasło').oneOf([yup.ref('password')], 'Hasła różnią się')
+      email: yup.string().trim().required('The email is required').email('The email is incorrect'),
+      firstName: yup.string().required('The first name is required').matches(/^[a-zA-Z ]*$/, 'The first name must consist of character'),
+      lastName: yup.string().required('The last name is required').matches(/^[a-zA-Z ]*$/, 'The last name must consist of characters'),
+      password: yup.string().required('The password is required')
+        .min(8, 'The password must consist of at least 8 characters ')
+        .minUppercase(1, 'The password must consist of at least one uppercase character')
+        .minNumbers(1, 'The password must consist of at least one digit')
+        .minSymbols(1, 'The password must consist of at least one special character'),
+      confirmPassword: yup.string().required('Confirm the password').oneOf([yup.ref('password')], 'The passwords differ')
     });
 
-    return { 
+  return { 
     schema,
     email: null,
     firstName: null,
@@ -125,8 +125,8 @@ export default {
       } else {
         this.$toast.add({
           severity: "error",
-          summary: "Rejestracja nie powiodła się",
-          detail: "Użytkownik o podanym adresie e-mail już istnieje.",
+          summary: "Could not register",
+          detail: "The user of the given email address exists",
           life: 10000
         });
       }
