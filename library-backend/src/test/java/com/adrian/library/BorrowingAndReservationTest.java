@@ -1,7 +1,7 @@
-package com.adrian.library.integration;
+package com.adrian.library;
 
-import com.adrian.library.loan.Loan;
-import com.adrian.library.loan.LoanRepository;
+import com.adrian.library.borrowing.Borrowing;
+import com.adrian.library.borrowing.BorrowingRepository;
 import com.adrian.library.reservation.ReservationRepository;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -18,19 +18,20 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @Testcontainers
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class LoanAndReservationTests {
+public class BorrowingAndReservationTest {
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private LoanRepository loanRepository;
+    private BorrowingRepository borrowingRepository;
     @Autowired
     private ReservationRepository reservationRepository;
 
@@ -46,28 +47,28 @@ public class LoanAndReservationTests {
 
     @Test
     @WithUserDetails("librarian@localhost")
-    void should_create_a_loan_from_a_reservation_after_a_copy_turned_available_due_to_the_cancelling_of_a_loan()
+    void shouldCreateBorrowingFromReservationAfterCopyTurnedAvailableDueToTheCancellingOfBorrowing()
             throws Exception {
-        mockMvc.perform(post("/loans")
+        mockMvc.perform(post("/borrowings")
                 .param("userId", "4")
                 .param("editionId", "1"))
                 .andExpect(status().isOk());
 
-        assertThat(loanRepository.findById(1).get().getStatus().getName()).isEqualTo("oczekujące");
+        assertThat(borrowingRepository.findById(1).get().getStatus().getName()).isEqualTo("awaiting");
 
         mockMvc.perform(post("/reservations")
                 .param("userId", "5")
                 .param("bookId", "1"))
                 .andExpect(status().isOk());
 
-        assertThat(reservationRepository.findById(1).get().getStatus().getName()).isEqualTo("aktywna");
+        assertThat(reservationRepository.findById(1).get().getStatus().getName()).isEqualTo("active");
 
-        mockMvc.perform(put("/loans/1/cancel"));
+        mockMvc.perform(put("/borrowings/1/cancel"));
 
-        assertThat(reservationRepository.findById(1).get().getStatus().getName()).isEqualTo("zakończona");
-        Loan loan = loanRepository.findById(2).get();
-        assertThat(loan.getReservation().getId()).isEqualTo(1);
-        assertThat(loan.getStatus().getName()).isEqualTo("oczekujące");
-        assertThat(loan.getCopy().getEdition().getBook().getId()).isEqualTo(1);
+        assertThat(reservationRepository.findById(1).get().getStatus().getName()).isEqualTo("finalized");
+        Borrowing borrowing = borrowingRepository.findById(2).get();
+        assertThat(borrowing.getReservation().getId()).isEqualTo(1);
+        assertThat(borrowing.getStatus().getName()).isEqualTo("awaiting");
+        assertThat(borrowing.getCopy().getEdition().getBook().getId()).isEqualTo(1);
     }
 }

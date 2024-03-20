@@ -91,6 +91,11 @@ public class BorrowingServiceImpl implements BorrowingService {
             }
         }
 
+        // if borrowing has been created out of a reservation
+        if (reservation != null) {
+            borrowing.setReservation(reservation);
+        }
+
         // if user has already reserved this book, throw exception
         for (Reservation userReservation : reservations) {
             if (userReservation.getStatus().getName().equals("active")) {
@@ -99,11 +104,6 @@ public class BorrowingServiceImpl implements BorrowingService {
                     throw new BookAlreadyReservedException();
                 }
             }
-        }
-
-        // if borrowing has been created out of a reservation
-        if (reservation != null) {
-            borrowing.setReservation(reservation);
         }
 
         // assign an available copy to the borrowing

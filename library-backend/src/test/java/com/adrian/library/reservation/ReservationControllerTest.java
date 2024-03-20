@@ -1,6 +1,5 @@
-package com.adrian.library.unit;
+package com.adrian.library.reservation;
 
-import com.adrian.library.reservation.ReservationRepository;
 import com.adrian.library.user.User;
 import com.adrian.library.user.UserRepository;
 import org.junit.jupiter.api.MethodOrderer;
@@ -19,15 +18,17 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @Testcontainers
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class ReservationTests {
+public class ReservationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -48,85 +49,69 @@ public class ReservationTests {
 
     @Test
     @WithUserDetails("reader@localhost")
-    void should_grant_access_by_id() throws Exception {
-        mockMvc.perform(get("/reservations/user/1")).andExpect(status().isOk());
-    }
-
-    @Test
-    @WithUserDetails("reader@localhost")
-    void should_deny_access() throws Exception {
+    void shouldNotBeGivenAccessToOtherUserReservations() throws Exception {
         mockMvc.perform(get("/reservations/user/4")).andExpect(status().isForbidden());
     }
 
     @Test
     @WithUserDetails("librarian@localhost")
-    void should_grant_access_by_role() throws Exception {
-        mockMvc.perform(get("/reservations/user/1")).andExpect(status().isOk());
+    void shouldBeGivenAccessToOtherUserReservations() throws Exception {
+        mockMvc.perform(get("/reservations/user/4")).andExpect(status().isOk());
     }
 
     @Test
     @Order(1)
     @WithUserDetails("reader@localhost")
-    void should_create_a_reservation() throws Exception {
+    void shouldReserveBookAndDecreaseActionPoints() throws Exception {
+        int actionPoints = userRepository.findById(1).get().getActionPoints();
+
         mockMvc.perform(post("/reservations")
-                .param("userId", "1")
-                .param("bookId", "3"))
+                        .param("bookId", "3"))
                 .andExpect(status().isOk());
 
         assertThat(reservationRepository.getReferenceById(1)).isNotNull();
+        assertThat(userRepository.findById(1).get().getActionPoints()).isEqualTo(actionPoints - 1);
     }
 
     @Test
     @Order(2)
     @WithUserDetails("reader@localhost")
-    void should_not_create_a_reservation_due_to_a_given_book_already_being_reserved_by_the_given_user()
-            throws Exception {
-        mockMvc.perform(post("/reservations")
-                .param("userId", "1")
-                .param("bookId", "3"))
-                .andExpect(status().isConflict());
+    void shouldBeGivenAccessToTheirOwnReservationsAndReturnThem() throws Exception {
+        mockMvc.perform(get("/reservations/user/1")).andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()", is(1)))
+                .andExpect(jsonPath("$[0].book.id", is(3)));
     }
 
     @Test
     @Order(3)
     @WithUserDetails("reader@localhost")
-    void should_not_create_a_reservation_due_to_a_book_already_being_loaned_by_this_user() throws Exception {
-        mockMvc.perform(post("/loans")
-                .param("userId", "1")
-                .param("editionId", "1"));
-
+    void shouldNotReserveBookDueToGivenBookAlreadyBeingReservedByTheGivenUser() throws Exception {
         mockMvc.perform(post("/reservations")
-                .param("userId", "1")
-                .param("bookId", "1"))
+                        .param("bookId", "3"))
                 .andExpect(status().isConflict());
     }
 
     @Test
-    @Order(4)
-    @WithUserDetails("librarian@localhost")
-    void should_decrease_the_action_points_when_creating_a_reservation() throws Exception {
-        assertThat(userRepository.findById(4).get().getActionPoints()).isEqualTo(5);
-
-        mockMvc.perform(post("/reservations")
-                .param("userId", "4")
-                .param("bookId", "3"))
-                .andExpect(status().isOk());
-
-        assertThat(userRepository.findById(4).get().getActionPoints()).isEqualTo(4);
-    }
-
-    @Test
-    @Order(5)
-    @WithUserDetails("librarian@localhost")
-    void should_not_create_a_reservation_due_to_the_lack_of_action_points() throws Exception {
-        User user = userRepository.findById(4).get();
+    @WithUserDetails("admin@localhost")
+    void shouldNotReserveBookDueToTheLackOfActionPoints() throws Exception {
+        User user = userRepository.findById(3).get();
         user.setActionPoints(0);
         userRepository.save(user);
 
         mockMvc.perform(post("/reservations")
-                .param("userId", "4")
-                .param("bookId", "2")
-                .param("editionId", "2"))
+                        .param("bookId", "2")
+                        .param("editionId", "2"))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    @WithUserDetails("reader@localhost")
+    void shouldBorrowBook_shouldNotReserveBookDueToGivenBookAlreadyBeingBorrowedByTheGivenUser() throws Exception {
+        mockMvc.perform(post("/borrowings")
+                .param("editionId", "1"));
+
+        mockMvc.perform(post("/reservations")
+                        .param("bookId", "1"))
                 .andExpect(status().isConflict());
     }
 }

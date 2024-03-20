@@ -7,8 +7,7 @@
     <changeSet author="adrian" id="1">
         <createProcedure dbms="mysql"
                          encoding="UTF-8"
-                         relativeToChangelogFile="true"
-                         schemaName="library">
+                         relativeToChangelogFile="true">
             CREATE PROCEDURE most_popular_books(
                 date_from date,
                 date_to date
@@ -31,8 +30,7 @@
 
         <createProcedure dbms="mysql"
                          encoding="UTF-8"
-                         relativeToChangelogFile="true"
-                         schemaName="library">
+                         relativeToChangelogFile="true">
             CREATE PROCEDURE most_popular_authors(
                 date_from date,
                 date_to date
@@ -59,8 +57,7 @@
 
         <createProcedure dbms="mysql"
                          encoding="UTF-8"
-                         relativeToChangelogFile="true"
-                         schemaName="library">
+                         relativeToChangelogFile="true">
             CREATE PROCEDURE most_popular_genres(
                 date_from date,
                 date_to date

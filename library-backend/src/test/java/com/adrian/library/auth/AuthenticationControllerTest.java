@@ -1,9 +1,8 @@
-package com.adrian.library.unit;
+package com.adrian.library.auth;
 
-import com.adrian.library.auth.ChangePasswordRequest;
 import com.google.gson.Gson;
-
 import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +17,15 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class UserTests {
+public class AuthenticationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,38 +42,48 @@ public class UserTests {
     }
 
     @Test
-    @WithUserDetails("reader@localhost")
-    void should_change_password() throws Exception {
-        ChangePasswordRequest request = ChangePasswordRequest.builder()
-                .currentPassword("1234")
-                .newPassword("123")
-                .confirmationPassword("123")
+    @Order(1)
+    void shouldRegister() throws Exception {
+        RegisterRequest request = RegisterRequest.builder()
+                .firstName("user")
+                .lastName("localhost")
+                .email("user@localhost")
+                .password("12345qQ!")
                 .build();
 
-        mockMvc.perform(patch("/users/changePassword")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(gson.toJson(request)))
+        mockMvc.perform(post("/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(request)))
                 .andExpect(status().isOk());
     }
 
-    // checks if a reader@localhost can access the reader@localhost's data
     @Test
-    @WithUserDetails("reader@localhost")
-    void shouldGrantAccessById() throws Exception {
-        mockMvc.perform(get("/users/1")).andExpect(status().isOk());
+    @Order(2)
+    void shouldAuthenticate() throws Exception {
+        AuthenticationRequest request = AuthenticationRequest.builder()
+                .email("user@localhost")
+                .password("12345qQ!")
+                .build();
+
+        mockMvc.perform(post("/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(request)))
+                .andExpect(status().isOk());
     }
 
-    // checks if a reader@localhost can access the librarian@localhost's data
     @Test
-    @WithUserDetails("reader@localhost")
-    void shouldDenyAccess() throws Exception {
-        mockMvc.perform(get("/users/2")).andExpect(status().isForbidden());
-    }
+    @Order(3)
+    @WithUserDetails("user@localhost")
+    void shouldChangePassword() throws Exception {
+        ChangePasswordRequest request = ChangePasswordRequest.builder()
+                .currentPassword("12345qQ!")
+                .newPassword("12345wW@")
+                .confirmationPassword("12345wW@")
+                .build();
 
-    // checks if a librarian@localhost can access the reader@localhost's data
-    @Test
-    @WithUserDetails("librarian@localhost")
-    void shouldGrantAccessByRole() throws Exception {
-        mockMvc.perform(get("/users/1")).andExpect(status().isOk());
+        mockMvc.perform(patch("/auth/changePassword")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(gson.toJson(request)))
+                .andExpect(status().isOk());
     }
 }
